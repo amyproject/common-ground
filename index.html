@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/hub/hub.css" />
     <script>
       // The shared hub bar (hub.js) reads this to mark the current section.
-      document.documentElement.dataset.hubSection = location.pathname.startsWith('/learn') ? 'explore' : location.pathname === '/' ? 'home' : 'account'
+      document.documentElement.dataset.hubSection = location.pathname.startsWith('/learn') ? 'explore' : location.pathname === '/' ? 'home' : /^\/(join|volunteer)/.test(location.pathname) ? 'volunteer' : 'account'
     </script>
     <script src="/hub/hub.js" defer></script>
   </head>

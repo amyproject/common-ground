@@ -3,6 +3,8 @@ import { ArrowRight, Droplets, Snowflake, Sun } from 'lucide-react'
 import type { BayAreaGeometry } from '../exploration/geography.ts'
 import type { Resource } from '../types.ts'
 import type { BayClimate, ClimateReference } from './climate.ts'
+import { SupportedBy } from './Volunteer.tsx'
+import { guild } from './guild.ts'
 
 type ZoneId = 'coast' | 'bay' | 'hills' | 'valley' | 'inland'
 const zones: { id: ZoneId; name: string; reference: string; x: [number, number]; blurb: string; bets: string }[] = [
@@ -29,10 +31,11 @@ export function HubHome() {
     <main className="hub-home" id="main-content">
       <section className="home-hero">
         <div className="home-hero-copy">
+          <SupportedBy />
           <p className="home-kicker">A permaculture commons for the Bay Area</p>
           <h1>Learn the land, plan a plot, <em>grow it together.</em></h1>
           <p className="home-lede">Walk the map to find real farms and gardens, test your own yard in the planner, and—if you organize a crew—run volunteers from one place.</p>
-          <div className="home-hero-actions"><a className="hub-button hub-button-primary" href="/learn">Explore the map <ArrowRight size={17} /></a><a className="hub-button" href="/plan/">Plan my plot</a></div>
+          <div className="home-hero-actions"><a className="hub-button hub-button-volunteer" href="/join">Sign up to volunteer <ArrowRight size={18} /></a><a className="hub-button hub-button-primary" href="/learn">Explore the map</a><a className="hub-button" href="/plan/">Plan my plot</a></div>
         </div>
         <Transect climate={climate} />
       </section>
@@ -51,7 +54,7 @@ export function HubHome() {
       </section>
 
     </main>
-    <footer className="hub-footer"><p>Common Ground is a community prototype. Place listings are public-source checks, not steward endorsements. Climate figures come from Open-Meteo ERA5 reanalysis.</p><p><a href="/learn?view=map">Places directory</a> · <a href="/projects/index.html">Readable listings</a></p></footer>
+    <footer className="hub-footer"><p>Common Ground is a community prototype. Place listings are public-source checks, not steward endorsements. Climate figures come from Open-Meteo ERA5 reanalysis.</p><p><a href={guild.links.website} target="_blank" rel="noreferrer">East Bay Permaculture Guild</a> · <a href="/learn?view=map">Places directory</a> · <a href="/projects/index.html">Readable listings</a></p></footer>
   </div>
 }
 

@@ -527,3 +527,8 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
   .mini-kpis { grid-template-columns: repeat(2, 1fr); }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* Hub sign-ups: event form fields stack label over input. */
+.hub-event-form label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; font-weight: 600; }
+.hub-event-form input, .hub-event-form select, .hub-event-form textarea { font: inherit; font-weight: 400; padding: 8px 10px; border: 1px solid var(--line, #dce2d5); border-radius: 7px; background: #fff; }
+.hub-event-form label:has(textarea), .hub-event-form button { grid-column: 1 / -1; }

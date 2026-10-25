@@ -48,7 +48,7 @@ test('sidebar has the three sections and no Data & trust page', opts, async () =
   const w = await open();
   assert.deepEqual($$(w, '.nav-sec h2').map((h) => h.textContent), ['Volunteers & Crews', 'GTM Partnerships', 'Growth Plan']);
   const links = $$(w, '.nav-link').map((a) => a.textContent.replace(/\d+$/, '').trim());
-  assert.deepEqual(links, ['Overview', 'Volunteers', 'Events & Crews', 'Messages', 'Rewards', 'Partners', 'Sites', 'Market funnel', 'Recommendations', '30/60/90 plan']);
+  assert.deepEqual(links, ['Overview', 'Hub sign-ups', 'Volunteers', 'Events & Crews', 'Messages', 'Rewards', 'Partners', 'Sites', 'Market funnel', 'Recommendations', '30/60/90 plan']);
   assert.ok(!w.document.body.textContent.includes('Data & trust'));
   assert.deepEqual(w.__errors, []);
 });

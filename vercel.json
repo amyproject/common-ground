@@ -4,9 +4,33 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/learn", "destination": "/index.html" },
-    { "source": "/login", "destination": "/index.html" },
-    { "source": "/plan", "destination": "/plan/index.html" },
-    { "source": "/canopy", "destination": "/canopy/index.html" }
+    {
+      "source": "/api/volunteer/:path*",
+      "destination": "/api/volunteer?path=:path*"
+    },
+    {
+      "source": "/learn",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/plan",
+      "destination": "/plan/index.html"
+    },
+    {
+      "source": "/canopy",
+      "destination": "/canopy/index.html"
+    },
+    {
+      "source": "/join",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/volunteer",
+      "destination": "/index.html"
+    }
   ]
 }

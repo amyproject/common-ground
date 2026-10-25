@@ -1,0 +1,143 @@
+[
+ {
+  "rec": false
+ },
+ {
+  "goto": "https://permaculture-hub-azure.vercel.app/learn",
+  "settle": 2500
+ },
+ {
+  "js": "D.setPos(760,470)"
+ },
+ {
+  "rec": true
+ },
+ {
+  "mark": "e1"
+ },
+ {
+  "js": "await D.sleep(500); await D.hover('text=West Oakland Farm Park'); await D.sleep(900); await D.hover('text=West Oakland Library'); await D.sleep(700); await D.moveTo(900, 560);"
+ },
+ {
+  "hold": 6430.0
+ },
+ {
+  "mark": "e2"
+ },
+ {
+  "js": "await D.click('[aria-label=\"Show whole Bay Area\"]', {after: 1400}); await D.moveTo(780, 640); await D.sleep(500); await D.moveTo(840, 760);"
+ },
+ {
+  "hold": 5910.0
+ },
+ {
+  "mark": "e3"
+ },
+ {
+  "js": "await D.click('text=Summer heat', {after: 600}); await D.moveTo(830, 560, 1200);"
+ },
+ {
+  "hold": 3630.0
+ },
+ {
+  "rec": false
+ },
+ {
+  "goto": "https://permaculture-hub-azure.vercel.app/plan/",
+  "settle": 2000
+ },
+ {
+  "js": "D.setPos(700,420)"
+ },
+ {
+  "rec": true
+ },
+ {
+  "mark": "p1"
+ },
+ {
+  "js": "await D.sleep(300); await D.type('#loc', 'Oakland', 9); await D.sleep(900); const s = document.querySelector('#locSuggest li, #locSuggest [role=option], #locSuggest button'); if (s) await D.click(s);"
+ },
+ {
+  "hold": 4770.0
+ },
+ {
+  "mark": "p2"
+ },
+ {
+  "js": "await D.click('text=Check this site', {after: 1500}); await D.scrollBy(260, 900); await D.moveTo(1000, 520, 900);"
+ },
+ {
+  "hold": 6490.0
+ },
+ {
+  "mark": "p3"
+ },
+ {
+  "js": "await D.click('#sampleBed', {after: 1500}); await D.hover('text=Guild health', 800);"
+ },
+ {
+  "hold": 5510.0
+ },
+ {
+  "rec": false
+ },
+ {
+  "goto": "https://permaculture-hub-azure.vercel.app/login",
+  "settle": 1800
+ },
+ {
+  "js": "D.setPos(720,600)"
+ },
+ {
+  "rec": true
+ },
+ {
+  "mark": "a1"
+ },
+ {
+  "js": "await D.sleep(200); await D.click('text=Fill in', {after: 450}); await D.click('button.hub-button-primary', {after: 100});"
+ },
+ {
+  "hold": 4200.0
+ },
+ {
+  "mark": "a2"
+ },
+ {
+  "js": "await D.sleep(300); await D.moveTo(360, 380, 700); await D.sleep(500); await D.moveTo(740, 380, 800); await D.sleep(450); await D.moveTo(930, 380, 500); await D.sleep(450); await D.moveTo(1120, 380, 500);"
+ },
+ {
+  "hold": 7200.0
+ },
+ {
+  "mark": "a3"
+ },
+ {
+  "js": "await D.click('a.nav-link[href=\"#/volunteers\"]', {after: 700}); await D.click('text=At risk', {after: 700}); await D.click('thead input[type=checkbox]', {after: 600}); await D.click('[data-act=bulk-msg][data-channel=email]', {after: 900});"
+ },
+ {
+  "hold": 8150.0
+ },
+ {
+  "mark": "a4"
+ },
+ {
+  "js": "await D.click('a.nav-link[href=\"#/funnel\"]', {after: 900}); await D.hover('.callout.leak h3', 800); await D.sleep(700); await D.hover('text=First visit@@.funnel', 900);"
+ },
+ {
+  "hold": 6050.0
+ },
+ {
+  "mark": "a5"
+ },
+ {
+  "js": "await D.click('a.nav-link[href=\"#/partners\"]', {after: 700}); const b = [...document.querySelectorAll('button.btn.sm[data-act=open-partner]')][1]; await D.click(b, {after: 1000}); await D.hover('.drawer .preview', 900);"
+ },
+ {
+  "hold": 9660.0
+ },
+ {
+  "rec": false
+ }
+]

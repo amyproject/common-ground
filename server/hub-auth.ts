@@ -44,7 +44,7 @@ export function createHubAuth({ dataDirectory, env = process.env, disabled = fal
   }
   const session = (req: IncomingMessage) => disabled ? { name: user } : verify(cookies(req)[COOKIE])
 
-  return async function hubAuth(req: IncomingMessage, res: ServerResponse, next: Next) {
+  const hubAuth = async function hubAuth(req: IncomingMessage, res: ServerResponse, next: Next) {
     const url = new URL(req.url ?? '/', 'http://localhost')
     const path = decodeURIComponent(url.pathname)
     try {
@@ -112,6 +112,8 @@ export function createHubAuth({ dataDirectory, env = process.env, disabled = fal
       return json(res, 500, { error: 'Server error' })
     }
   }
+  // Lets other local APIs (volunteer sign-ups) check for an organizer session.
+  return Object.assign(hubAuth, { isAdmin: (req: IncomingMessage) => Boolean(session(req)), secret })
 }
 
 class PayloadError extends Error {}

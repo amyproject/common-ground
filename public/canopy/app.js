@@ -23,6 +23,7 @@
   };
 
   const ICON = {
+    signups: '<path d="M10 17v-6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M10 11c-3.4 0-5-2-5-5 3 0 5 1.7 5 5zM10 9.5c0-3 1.9-4.7 5-4.7 0 3.1-2 4.7-5 4.7z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>',
     overview: '<path d="M3 10l7-6 7 6v7H3z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>',
     volunteers: '<circle cx="7" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="14" cy="8" r="2.4" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M2 17c0-3 2.5-5 5-5s5 2 5 5M12 16c.3-2 1.6-3.5 3.5-3.5S18 14 18 16" fill="none" stroke="currentColor" stroke-width="1.7"/>',
     events: '<rect x="3" y="4" width="14" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3 8h14M7 2v4M13 2v4" stroke="currentColor" stroke-width="1.7"/>',
@@ -49,13 +50,13 @@
     leaf: '<svg class="leaf" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 10C2 5 5 2 10.5 1.5 10.5 7 7.5 10 2 10zM2 10l5-5"/></svg>',
   };
   const NAV = [
-    ['Volunteers & Crews', [['overview', 'Overview'], ['volunteers', 'Volunteers'], ['events', 'Events & Crews'], ['messages', 'Messages'], ['rewards', 'Rewards']]],
+    ['Volunteers & Crews', [['overview', 'Overview'], ['signups', 'Hub sign-ups'], ['volunteers', 'Volunteers'], ['events', 'Events & Crews'], ['messages', 'Messages'], ['rewards', 'Rewards']]],
     ['GTM Partnerships', [['partners', 'Partners'], ['sites', 'Sites']]],
     ['Growth Plan', [['funnel', 'Market funnel'], ['recs', 'Recommendations'], ['plan', '30/60/90 plan']]],
   ];
   // Page titles in the hub's display voice: Fraunces with one italic sage accent word.
   const TITLE_HTML = {
-    overview: 'Volunteer <em>overview.</em>', volunteers: 'Volunteer <em>roster.</em>', events: 'Events &amp; <em>crews.</em>',
+    overview: 'Volunteer <em>overview.</em>', signups: 'Hub <em>sign-ups.</em>', volunteers: 'Volunteer <em>roster.</em>', events: 'Events &amp; <em>crews.</em>',
     messages: 'Messages <em>out.</em>', rewards: 'Seeds &amp; <em>rewards.</em>', partners: 'Partner <em>groups.</em>', sites: 'Garden <em>sites.</em>',
     funnel: 'Market <em>funnel.</em>', recs: 'What to try <em>next.</em>', plan: '30/60/90 <em>plan.</em>',
   };
@@ -717,7 +718,73 @@ npm run dev</pre></div></section>`;
   }
 
   // ---------- render ----------
-  const PAGES = { overview: pageOverview, volunteers: pageVolunteers, events: pageEvents, messages: pageMessages, rewards: pageRewards, partners: pagePartners, sites: pageSites, funnel: pageFunnel, recs: pageRecs, plan: pagePlan };
+  // ---------- Hub sign-ups: volunteers who joined through Common Ground (/join) ----------
+  // Lives on the hub server (/api/volunteer/admin/*), shared with each volunteer's dashboard.
+  const hub = { data: null, loading: false, error: '', eventId: null };
+  async function hubApi(path, body) {
+    const r = await fetch(`/api/volunteer/admin/${path}`, body ? { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : { credentials: 'same-origin' });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(j.error || `HTTP ${r.status}`);
+    return j;
+  }
+  async function loadHub() {
+    hub.loading = true;
+    try { hub.data = await hubApi('overview'); hub.error = ''; } catch (e) { hub.error = e.message; }
+    hub.loading = false;
+    if (ui.route === 'signups') render();
+  }
+  async function hubAct(path, body, msg) {
+    try { await hubApi(path, body); await loadHub(); if (msg) toast(msg); } catch (e) { toast(e.message); }
+  }
+  const hubDate = (iso) => new Date(`${String(iso).slice(0, 10)}T12:00:00`).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  function pageSignups() {
+    if (!hub.data && !hub.loading && !hub.error) loadHub();
+    const head = pageHead('People who signed up on the Common Ground hub. Check them in at events to award Seeds, confirm the hours they log, and pack their shop rewards.', `<a class="btn" href="/join" target="_blank" rel="noreferrer">Open the sign-up page</a><button class="btn" data-act="hub-csv"${hub.data ? '' : ' disabled'}>Export CSV</button><button class="btn primary" data-act="hub-refresh">Refresh</button>`);
+    if (!hub.data) return `${head}<section class="card"><div class="card-b"><p>${hub.error ? `${esc(hub.error)} <button class="btn sm" data-act="hub-refresh">Try again</button>` : 'Loading sign-ups…'}</p></div></section>`;
+    const d = hub.data, vols = d.volunteers;
+    const byId = Object.fromEntries(vols.map((v) => [v.id, v]));
+    const weekAgo = new Date(Date.now() - 7 * 864e5).toISOString();
+    const pendingLogs = d.logs.filter((l) => l.status === 'pending');
+    const openOrders = d.orders.filter((o) => o.status === 'requested' || o.status === 'ready');
+    const ev = d.events.find((e) => e.id === hub.eventId) || d.events.find((e) => e.date >= today()) || d.events[0];
+    const name = (v) => esc(`${v.firstName} ${v.lastName || ''}`.trim());
+    const status = (s) => ({ requested: 'Requested', ready: 'Ready to hand out', 'picked-up': 'Picked up', cancelled: 'Cancelled', pending: 'Waiting', verified: 'Confirmed', declined: 'Declined' })[s] || s;
+    return `${head}
+      <div class="kpis k4">${simpleKpi('Hub volunteers', fmtN(vols.length), `${vols.filter((v) => v.createdAt > weekAgo).length} joined in the last 7 days`)}${simpleKpi('Came through a friend', fmtN(vols.filter((v) => v.referredByName).length), 'signed up with an invite code')}${simpleKpi('Hours to confirm', fmtN(pendingLogs.reduce((s, l) => s + l.hours, 0)), `${pendingLogs.length} entries · 2 Seeds per confirmed hour`)}${simpleKpi('Rewards to pack', fmtN(openOrders.length), 'hand out at the monthly meeting')}</div>
+      <div class="grid">
+        <section class="card c12" aria-labelledby="h-hubvols"><div class="card-h"><div><h3 id="h-hubvols">New volunteers</h3><p>Newest first. Contact them only on the channels they agreed to.</p></div></div>
+          <div class="card-b flush"><div class="tbl-wrap" style="max-height:360px;overflow-y:auto"><table class="tbl"><thead><tr><th scope="col">Volunteer</th><th scope="col">Neighborhood</th><th scope="col">Interests</th><th scope="col">Joined</th><th scope="col">Contact</th><th scope="col" class="num">Hours</th><th scope="col" class="num">Seeds</th><th scope="col">Tier</th><th scope="col">Invited by</th></tr></thead><tbody>
+          ${vols.length ? vols.map((v) => `<tr><td><div class="person"><span class="avatar sm">${esc(initials(`${v.firstName} ${v.lastName || ''}`))}</span><span>${name(v)}${v.note ? `<br><small class="muted">${esc(v.note)}</small>` : ''}</span></div></td><td>${esc(v.neighborhood)}</td><td>${esc((v.interests || []).join(', ') || '—')}</td><td class="tabular">${hubDate(v.createdAt)}</td><td>${v.consentEmail ? `<a href="mailto:${esc(v.email)}">${esc(v.email)}</a>` : `<span class="muted">${esc(v.email)} (no email consent)</span>`}${v.phone ? `<br><small>${esc(v.phone)}${v.consentSms ? ' · texts OK' : ''}</small>` : ''}</td><td class="num">${v.hours}</td><td class="num">${v.points}${v.balance !== v.points ? `<br><small class="muted">${v.balance} unspent</small>` : ''}</td><td>${esc(v.tier)}</td><td>${esc(v.referredByName || '—')}</td></tr>`).join('') : '<tr><td colspan="9">No sign-ups yet. Share the hub’s sign-up link at the next meeting.</td></tr>'}
+          </tbody></table></div></div></section>
+        <section class="card c7" aria-labelledby="h-hubev"><div class="card-h"><div><h3 id="h-hubev">Check-in</h3><p>Checking someone in awards Seeds on their dashboard: +15 first visit, then +10 workday, +5 meeting, +8 workshop. Their inviter gets +25 the first time.</p></div></div>
+          <div class="card-b">${d.events.length ? `<label class="sr-only" for="hub-ev">Event</label><select id="hub-ev" data-change="hub-ev">${d.events.map((e) => `<option value="${e.id}"${ev && e.id === ev.id ? ' selected' : ''}>${esc(hubDate(e.date))} · ${esc(e.title)} · ${e.going.length} going</option>`).join('')}</select>
+            ${ev ? `<p class="muted" style="margin:8px 0">${esc(ev.time || '')} · ${esc(ev.place || '')}${ev.capacity ? ` · ${ev.capacity} spots` : ''} <button class="btn sm" data-act="hub-archive" data-id="${ev.id}">Remove event</button></p>
+            <div class="tbl-wrap"><table class="tbl"><thead><tr><th scope="col">Volunteer</th><th scope="col">RSVP</th><th scope="col">Here?</th></tr></thead><tbody>
+            ${[...ev.going, ...vols.map((v) => v.id).filter((id) => !ev.going.includes(id))].map((id) => byId[id]).filter(Boolean).map((v) => { const here = ev.attended.includes(v.id); return `<tr><td>${name(v)}</td><td>${ev.going.includes(v.id) ? 'Going' : '<span class="muted">—</span>'}</td><td><button class="btn sm${here ? ' primary' : ''}" data-act="hub-checkin" data-vol="${v.id}" data-ev="${ev.id}" data-present="${here ? 'false' : 'true'}" aria-pressed="${here}">${here ? 'Checked in' : 'Check in'}</button></td></tr>`; }).join('') || '<tr><td colspan="3">No volunteers yet.</td></tr>'}
+            </tbody></table></div>` : ''}` : '<p>No events yet. Publish one below.</p>'}</div></section>
+        <section class="card c5" aria-labelledby="h-hubnew"><div class="card-h"><div><h3 id="h-hubnew">Publish an event</h3><p>Shows on every volunteer’s dashboard for RSVPs.</p></div></div>
+          <div class="card-b"><form data-form="hub-event" class="form-grid hub-event-form">
+            <label>Title<input name="title" required maxlength="80" placeholder="Sheet-mulch Saturday"></label>
+            <label>Type<select name="kind"><option value="workday">Workday</option><option value="meeting">Meeting</option><option value="workshop">Workshop</option></select></label>
+            <label>Date<input name="date" type="date" required></label>
+            <label>Time<input name="time" maxlength="40" placeholder="9:30 AM–12:30 PM"></label>
+            <label>Place<input name="place" maxlength="100" placeholder="Oakland Peace Center garden"></label>
+            <label>Spots (0 = no limit)<input name="capacity" type="number" min="0" max="500" value="0"></label>
+            <label>Event link (optional)<input name="url" type="url" placeholder="https://partiful.com/e/…"></label>
+            <label>What to expect<textarea name="description" rows="2" maxlength="400"></textarea></label>
+            <button class="btn primary" type="submit">Publish to volunteers</button></form></div></section>
+        <section class="card c6" aria-labelledby="h-hublogs"><div class="card-h"><div><h3 id="h-hublogs">Logged hours to confirm</h3><p>Work volunteers did before joining or with partner groups. Confirmed hours earn 2 Seeds each.</p></div></div>
+          <div class="card-b flush"><div class="tbl-wrap" style="max-height:300px;overflow-y:auto"><table class="tbl"><thead><tr><th scope="col">Volunteer</th><th scope="col">What</th><th scope="col">Date</th><th scope="col" class="num">Hours</th><th scope="col">Status</th></tr></thead><tbody>
+          ${d.logs.length ? d.logs.slice(0, 50).map((l) => `<tr><td>${esc(l.volunteerName)}</td><td>${esc(l.activity)}${l.place ? `<br><small class="muted">${esc(l.place)}</small>` : ''}</td><td class="tabular">${hubDate(l.date)}</td><td class="num">${l.hours}</td><td>${l.status === 'pending' ? `<button class="btn sm primary" data-act="hub-log" data-vol="${l.volunteerId}" data-id="${l.id}" data-status="verified">Confirm</button> <button class="btn sm" data-act="hub-log" data-vol="${l.volunteerId}" data-id="${l.id}" data-status="declined">Decline</button>` : esc(status(l.status))}</td></tr>`).join('') : '<tr><td colspan="5">Nothing to review.</td></tr>'}
+          </tbody></table></div></div></section>
+        <section class="card c6" aria-labelledby="h-huborders"><div class="card-h"><div><h3 id="h-huborders">Shop rewards</h3><p>Requests paid in Seeds. Pack them, then hand them out at the meeting.</p></div></div>
+          <div class="card-b flush"><div class="tbl-wrap" style="max-height:300px;overflow-y:auto"><table class="tbl"><thead><tr><th scope="col">Volunteer</th><th scope="col">Reward</th><th scope="col" class="num">Seeds</th><th scope="col">Status</th></tr></thead><tbody>
+          ${d.orders.length ? d.orders.slice(0, 50).map((o) => `<tr><td>${esc(o.volunteerName)}</td><td>${esc(o.name)}<br><small class="muted">${hubDate(o.createdAt)}</small></td><td class="num">${o.price}</td><td>${o.status === 'requested' ? `<button class="btn sm primary" data-act="hub-order" data-vol="${o.volunteerId}" data-id="${o.id}" data-status="ready">Packed</button> <button class="btn sm" data-act="hub-order" data-vol="${o.volunteerId}" data-id="${o.id}" data-status="cancelled">Cancel</button>` : o.status === 'ready' ? `<button class="btn sm primary" data-act="hub-order" data-vol="${o.volunteerId}" data-id="${o.id}" data-status="picked-up">Handed out</button>` : esc(status(o.status))}</td></tr>`).join('') : '<tr><td colspan="4">No rewards requested yet.</td></tr>'}
+          </tbody></table></div></div></section>
+      </div>`;
+  }
+
+  const PAGES = { signups: pageSignups, overview: pageOverview, volunteers: pageVolunteers, events: pageEvents, messages: pageMessages, rewards: pageRewards, partners: pagePartners, sites: pageSites, funnel: pageFunnel, recs: pageRecs, plan: pagePlan };
   function renderNav() {
     const due = MY.rosterRows(state, today()).filter((r) => r.action && r.action.priority === 1).length;
     $('#nav').innerHTML = NAV.map(([sec, items]) => `<div class="nav-sec"><h2>${esc(sec)}</h2>${items.map(([id, l]) => `<a class="nav-link" href="#/${id}"${ui.route === id ? ' aria-current="page"' : ''}>${ui.route === id ? IC.leaf : ''}<svg viewBox="0 0 20 20" aria-hidden="true">${ICON[id]}</svg><span>${esc(l)}</span>${id === 'volunteers' && due ? `<span class="num-badge" aria-label="${due} urgent">${due}</span>` : ''}</a>`).join('')}</div>`).join('');
@@ -809,6 +876,15 @@ npm run dev</pre></div></section>`;
 
   // ---------- actions ----------
   const ACT = {
+    'hub-refresh': () => { hub.data = null; hub.error = ''; loadHub(); render(); },
+    'hub-checkin': (el) => hubAct('checkin', { volunteerId: el.dataset.vol, eventId: el.dataset.ev, present: el.dataset.present === 'true' }, el.dataset.present === 'true' ? 'Checked in: Seeds awarded' : 'Check-in removed'),
+    'hub-log': (el) => hubAct('log', { volunteerId: el.dataset.vol, logId: el.dataset.id, status: el.dataset.status }, el.dataset.status === 'verified' ? 'Hours confirmed: Seeds awarded' : 'Entry declined'),
+    'hub-order': (el) => hubAct('order', { volunteerId: el.dataset.vol, orderId: el.dataset.id, status: el.dataset.status }, el.dataset.status === 'cancelled' ? 'Request cancelled and Seeds returned' : 'Reward updated'),
+    'hub-archive': (el) => { if (confirm('Remove this event from volunteer dashboards?')) hubAct('archive', { eventId: el.dataset.id }, 'Event removed'); },
+    'hub-csv': () => {
+      const rows = [['First name', 'Last name', 'Email', 'Email OK', 'Phone', 'Texts OK', 'Neighborhood', 'Interests', 'Availability', 'Joined', 'Hours', 'Seeds', 'Tier', 'Invited by']].concat((hub.data ? hub.data.volunteers : []).map((v) => [v.firstName, v.lastName, v.email, v.consentEmail ? 'yes' : 'no', v.phone, v.consentSms ? 'yes' : 'no', v.neighborhood, (v.interests || []).join('; '), (v.availability || []).join('; '), v.createdAt.slice(0, 10), v.hours, v.points, v.tier, v.referredByName || '']));
+      download('hub-signups.csv', rows.map((r) => r.map((c) => `"${String(c == null ? '' : c).replace(/"/g, '""')}"`).join(',')).join('\n'), 'text/csv');
+    },
     go: (el) => go(el.dataset.route),
     range: (el) => { F().days = +el.dataset.days; ui.anim = true; render(); },
     kpi: (el) => { ui.metric = el.dataset.id; ui.anim = true; render(); const t = $(`.kpi[data-id="${el.dataset.id}"]`) || $('.kpi.on'); if (t && el.classList.contains('kpi')) t.focus(); },
@@ -946,6 +1022,7 @@ npm run dev</pre></div></section>`;
     commit(n ? `Added ${n} to the partner pipeline` : 'Already in the pipeline');
   }
   const FORMS = {
+    'hub-event': (o, form) => { hubAct('events', o, 'Event published to volunteer dashboards'); form.reset(); },
     discover: async (f) => {
       const D = ui.disc;
       Object.assign(D, { city: f.city.trim(), category: f.category, count: +f.count, busy: true, error: null });
@@ -982,6 +1059,7 @@ npm run dev</pre></div></section>`;
     reach: (f) => { state.growth.reach.forEach((r) => { if (f[r.id] != null) r.value = Math.max(0, +f[r.id] || 0); }); commit('Reach updated'); },
   };
   const CHANGE = {
+    'hub-ev': (el) => { hub.eventId = el.value; render(); },
     'f-hood': (el) => { F().neighborhood = el.value; render(); },
     'f-source': (el) => { F().source = el.value; render(); },
     'vol-hood': (el) => { ui.vol.hood = el.value; ui.vol.page = 0; render(); },

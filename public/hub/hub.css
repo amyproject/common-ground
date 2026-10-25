@@ -58,6 +58,12 @@
 .hub-signin:active { transform: translateY(2px); box-shadow: 0 0 0 #d5dccb; }
 .hub-signin.is-admin { background: var(--cg-forest); color: #f5f7ec; border-color: var(--cg-forest); box-shadow: 0 2px 0 #18382a; }
 .hub-signin.is-admin:hover { background: var(--cg-forest-2); }
+.hub-join { display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px; border-radius: var(--cg-radius); background: var(--cg-honey); color: #2c2414; font: 650 13px/1.3 var(--cg-body); text-decoration: none; box-shadow: 0 2px 0 #a97d33; transition: transform .12s, box-shadow .12s, background .15s; }
+.hub-join:hover { background: #dfb262; }
+.hub-join:active { transform: translateY(2px); box-shadow: 0 0 0 transparent; }
+.hub-organizer { display: inline-flex; align-items: center; gap: 6px; padding: 8px 6px; color: var(--cg-muted); font: 550 13px var(--cg-body); text-decoration: none; }
+.hub-organizer:hover { color: var(--cg-forest); }
+.hub-signin.is-volunteer b { font-weight: 700; color: var(--cg-forest); }
 .hub-signout { border: 0; background: none; padding: 8px 6px; color: var(--cg-muted); font: 500 12px var(--cg-body); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 .hub-signout:hover { color: var(--cg-forest); }
 .hub-bar a:focus-visible, .hub-bar button:focus-visible { outline: 2px solid #537c47; outline-offset: 3px; }
