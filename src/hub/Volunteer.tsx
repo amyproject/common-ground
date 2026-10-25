@@ -35,6 +35,14 @@ async function api<T>(path: string, body?: unknown): Promise<T> {
   if (!response.ok) throw Object.assign(new Error(data.error ?? 'Something went wrong.'), { status: response.status })
   return data as T
 }
+// The hosted site answers 503 until organizers connect storage; send people to the Guild's own form meanwhile.
+export function SignupPaused({ compact = false }: { compact?: boolean }) {
+  return <div className={`signup-paused ${compact ? 'compact' : ''}`} role="status">
+    <Sprout size={compact ? 20 : 26} />
+    <div><strong>Online accounts open soon.</strong><p>You can still sign up today with the Guild’s volunteer form. Organizers will welcome you at the next meeting, and your Seeds start when accounts open.</p>
+      <div className="signup-paused-links"><a className="hub-button hub-button-primary" href={guild.links.volunteerForm} target="_blank" rel="noopener noreferrer">Use the Guild volunteer form <ExternalLink size={16} /></a><a className="text-button" href={guild.links.emailList} target="_blank" rel="noopener noreferrer">Join the email list</a></div></div>
+  </div>
+}
 const refreshHeader = () => window.dispatchEvent(new Event('hub:refresh'))
 const dateLabel = (iso: string) => new Date(`${iso}T12:00:00`).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
 
@@ -74,16 +82,17 @@ export function Join() {
   const [ageOk, setAgeOk] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [paused, setPaused] = useState(false)
   const set = (key: keyof typeof form) => (event: { target: { value: string } }) => setForm(current => ({ ...current, [key]: event.target.value }))
   const toggle = (list: string[], setList: (next: string[]) => void, id: string) => setList(list.includes(id) ? list.filter(item => item !== id) : [...list, id])
-  useEffect(() => { fetch('/api/volunteer/session', { credentials: 'same-origin' }).then(r => r.ok ? r.json() : null).then(state => { if (state?.signedIn) window.location.replace('/volunteer') }).catch(() => undefined) }, [])
+  useEffect(() => { fetch('/api/volunteer/session', { credentials: 'same-origin' }).then(r => { if (r.status === 503) setPaused(true); return r.ok ? r.json() : null }).then(state => { if (state?.signedIn) window.location.replace('/volunteer') }).catch(() => undefined) }, [])
   const submit = async (event: FormEvent) => {
     event.preventDefault(); setBusy(true); setError('')
     try {
       await api('signup', { ...form, interests, availability, consentEmail, consentSms, ageOk })
       try { localStorage.setItem('cg-volunteer-email', form.email.trim()) } catch { /* storage unavailable */ }
       window.location.assign('/volunteer?welcome=1')
-    } catch (failure) { setError((failure as Error).message); setBusy(false) }
+    } catch (failure) { if ((failure as { status?: number }).status === 503) setPaused(true); else setError((failure as Error).message); setBusy(false) }
   }
   return <div className="hub-page">
     <main className="join-page" id="main-content">
@@ -98,6 +107,7 @@ export function Join() {
       </section>
       <form className="join-card" onSubmit={submit} noValidate>
         <h2>Join the <em>crew.</em></h2>
+        {paused && <SignupPaused />}
         {prefilled && <p className="join-ref"><Check size={15} />We filled in what you told us. Add a password and you’re in.</p>}
         {form.referral && <p className="join-ref"><Users size={15} />Invited with code <b>{form.referral.toUpperCase()}</b>. Your friend earns Seeds when you show up.</p>}
         <div className="join-row"><label>First name<input value={form.firstName} onChange={set('firstName')} autoComplete="given-name" required /></label><label>Last name <small>optional</small><input value={form.lastName} onChange={set('lastName')} autoComplete="family-name" /></label></div>
@@ -114,7 +124,7 @@ export function Join() {
         <label className="check"><input type="checkbox" checked={ageOk} onChange={event => setAgeOk(event.target.checked)} />I’m 16 or older, or I have a parent or guardian’s OK</label>
         {!form.referral && <label>Invite code <small>optional</small><input value={form.referral} onChange={set('referral')} placeholder="e.g. ROSA-4821" /></label>}
         {error && <p className="login-error" role="alert">{error}</p>}
-        <button className="hub-button hub-button-primary join-submit" disabled={busy}>{busy ? 'Signing you up…' : <>Sign me up · earn 5 Seeds <ArrowRight size={18} /></>}</button>
+        <button className="hub-button hub-button-primary join-submit" disabled={busy || paused}>{busy ? 'Signing you up…' : <>Sign me up · earn 5 Seeds <ArrowRight size={18} /></>}</button>
         <p className="join-fine">Organizers in the Guild see your name, contact details, and interests so they can welcome you. Nothing is sold or shared. Already joined? <a href="/login">Sign in</a>.</p>
       </form>
     </main>
@@ -132,7 +142,7 @@ export function VolunteerDashboard() {
   const stamps = useMemo(() => {
     try { const value = JSON.parse(localStorage.getItem(PASSPORT_KEY) ?? 'null'); return value?.stamps ? Object.keys(value.stamps) : [] } catch { return [] }
   }, [])
-  if (error?.status === 401) return <VolunteerLanding />
+  if (error?.status === 401 || error?.status === 503) return <VolunteerLanding paused={error.status === 503} />
   if (!data) return <div className="hub-page"><main className="volunteer-page"><p className="view-loading" role="status">{error ? error.message : 'Opening your dashboard…'}</p></main></div>
   const { seeds, volunteer } = data
   const claimable = stamps.filter(zone => !data.seeds.ledger.some(item => item.reason.endsWith(`: ${zone}`)))
@@ -287,7 +297,7 @@ const KIT_FALLBACK: ShopItem = { id: 'seed-kit', name: 'Permaculture Seed Kit', 
 
 // The Volunteer tab for people who haven't joined yet: the pitch, the kit, and a quick start
 // that opens the sign-up form already filled in.
-export function VolunteerLanding() {
+export function VolunteerLanding({ paused = false }: { paused?: boolean }) {
   const [items, setItems] = useState<ShopItem[]>([])
   const [quick, setQuick] = useState({ first: '', email: '', neighborhood: '' })
   const [interests, setInterests] = useState<string[]>([])
@@ -314,6 +324,7 @@ export function VolunteerLanding() {
           <h1>Give a few hours. <em>Grow a lot.</em></h1>
           <p className="home-lede">Plant, build, compost, and teach alongside neighbors across the East Bay. Every hour earns Seeds you can trade for seed packets and the Permaculture Seed Kit.</p>
           <ul className="guild-band-perks"><li><b>+5</b> for signing up</li><li><b>+15</b> first visit</li><li><b>+10</b> each workday</li><li><b>+25</b> per friend who shows up</li></ul>
+          {paused && <SignupPaused compact />}
         </div>
         <form className="vl-quick" onSubmit={go}>
           <h2>Start in <em>30 seconds.</em></h2>

@@ -14,7 +14,10 @@ const api = createVolunteerApi({
   secureCookies: true,
   // Set HUB_DEMO_VOLUNTEER=off to hide the shared demo volunteer account.
   demo: env.HUB_DEMO_VOLUNTEER !== 'off',
-  unavailable: storage ? null : 'Volunteer sign-up isn’t switched on for this site yet. The organizers need to connect a database (Vercel → Storage → Upstash Redis).',
+  // Visitors see this; the setup hint below goes to the function logs for organizers.
+  unavailable: storage ? null : 'Online volunteer accounts aren’t open yet. Please use the Guild’s volunteer form for now.',
 })
+
+if (!storage) console.warn('Volunteer storage is not configured: connect Upstash Redis in Vercel (Storage → Create → Upstash for Redis → connect to this project), then redeploy.')
 
 export default function handler(req, res) { return api(req, res) }

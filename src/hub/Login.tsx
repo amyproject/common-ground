@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { ArrowRight, KeyRound } from 'lucide-react'
+import { SignupPaused } from './Volunteer.tsx'
 
 const query = new URLSearchParams(window.location.search)
 const initialRole: 'volunteer' | 'organizer' = query.get('as') === 'organizer' || (query.get('next') ?? '').startsWith('/canopy') ? 'organizer' : 'volunteer'
@@ -21,6 +22,7 @@ export function Login() {
   const [demo, setDemo] = useState(false)
   const [shake, setShake] = useState(0)
   const [role, setRole] = useState(initialRole)
+  const [paused, setPaused] = useState(false)
   const [demoVolunteer, setDemoVolunteer] = useState<{ email: string; password: string } | null>(null)
   useEffect(() => {
     fetch('/api/auth/me', { credentials: 'same-origin' }).then(r => r.json()).then(state => {
@@ -28,7 +30,7 @@ export function Login() {
       setDemo(Boolean(state.demoCredentials))
     }).catch(() => undefined)
     fetch('/api/volunteer/demo', { credentials: 'same-origin' }).then(r => r.ok ? r.json() : null).then(setDemoVolunteer).catch(() => undefined)
-    if (initialRole === 'volunteer') fetch('/api/volunteer/session', { credentials: 'same-origin' }).then(r => r.ok ? r.json() : null).then(state => { if (state?.signedIn) window.location.replace(nextPath('volunteer')) }).catch(() => undefined)
+    if (initialRole === 'volunteer') fetch('/api/volunteer/session', { credentials: 'same-origin' }).then(r => { if (r.status === 503) setPaused(true); return r.ok ? r.json() : null }).then(state => { if (state?.signedIn) window.location.replace(nextPath('volunteer')) }).catch(() => undefined)
   }, [])
   const submit = async (event: FormEvent) => {
     event.preventDefault()
@@ -36,6 +38,7 @@ export function Login() {
     try {
       const response = await fetch(role === 'volunteer' ? '/api/volunteer/signin' : '/api/auth/login', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(role === 'volunteer' ? { email: username, password } : { username, password }) })
       const body = await response.json().catch(() => ({}))
+      if (response.status === 503 && role === 'volunteer') { setPaused(true); setBusy(false); return }
       if (!response.ok) { setError(body.error ?? 'Sign-in failed.'); setShake(value => value + 1); setBusy(false); return }
       if (role === 'volunteer') { try { localStorage.setItem('cg-volunteer-email', username.trim()) } catch { /* storage unavailable */ } }
       setOpen(true)
@@ -63,6 +66,7 @@ export function Login() {
           : <><h1>Organizer <em>sign-in.</em></h1><p>Canopy holds volunteer contacts, so it’s for guild organizers only.</p></>}
         <label>{role === 'volunteer' ? 'Email' : 'Username'}<input name="username" type={role === 'volunteer' ? 'email' : 'text'} autoComplete={role === 'volunteer' ? 'email' : 'username'} value={username} onChange={event => setUsername(event.target.value)} autoFocus required /></label>
         <label>Password<input name="password" type="password" autoComplete="current-password" value={password} onChange={event => setPassword(event.target.value)} required /></label>
+        {paused && role === 'volunteer' && <SignupPaused compact />}
         {error && <p className="login-error" role="alert">{error}</p>}
         <button className="hub-button hub-button-primary" disabled={busy || !username || !password}>{open ? (role === 'volunteer' ? 'Opening your dashboard…' : 'Opening Canopy…') : busy ? 'Checking…' : <>Sign in <ArrowRight size={17} /></>}</button>
         {role === 'volunteer' && demoVolunteer && <div className="login-demo"><KeyRound size={16} /><span>Try the demo volunteer: <code>{demoVolunteer.email}</code> / <code>{demoVolunteer.password}</code></span><button type="button" onClick={() => { setUsername(demoVolunteer.email); setPassword(demoVolunteer.password); setError('') }}>Fill in</button></div>}

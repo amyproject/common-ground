@@ -273,3 +273,14 @@
 .supported-by small { display: block; font-size: 11px; color: var(--cg-muted); letter-spacing: .3px; }
 .supported-by strong { display: block; font: 500 15px/1.2 var(--cg-display); }
 .supported-by > svg { color: var(--cg-muted); }
+
+/* Shown when the hosted site has no volunteer database yet. */
+.signup-paused { display: flex; gap: 14px; align-items: flex-start; padding: 16px 18px; margin: 4px 0 14px; border-radius: var(--cg-radius-lg); background: #fbf3df; border: 1px solid #e6d3a3; color: var(--cg-ink); }
+.signup-paused > svg { flex-shrink: 0; margin-top: 2px; color: #a97d33; }
+.signup-paused strong { font: 560 19px/1.2 var(--cg-display); }
+.signup-paused p { margin: 6px 0 12px; font-size: 14px; line-height: 1.5; color: #5f5a45; }
+.signup-paused-links { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+.signup-paused-links .hub-button { text-decoration: none; }
+.signup-paused.compact { padding: 12px 14px; margin-top: 18px; }
+.signup-paused.compact strong { font-size: 16px; }
+.signup-paused.compact p { font-size: 13px; }

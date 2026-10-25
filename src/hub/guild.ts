@@ -8,6 +8,7 @@ export const guild = {
   links: {
     website: 'https://collectiveresiliencenow.org/east-bay-permaculture-guild/',
     linktree: 'https://linktr.ee/eastbaypermacultureguild',
+    volunteerForm: 'https://docs.google.com/forms/d/e/1FAIpQLScWYNUTGP3sdrGopwEcImSZ--WlXjbktrZH6KJ5ptlR3p3xLQ/viewform',
     emailList: 'https://docs.google.com/forms/d/e/1FAIpQLSeOsRcMnW2NFCFLemG9S7bgbUgVxIjOIoiKAdr0ukfdWkDokg/viewform',
     partiful: 'https://partiful.com/u/PcnFYcpQOwCLdVFxzZ3i',
     regenEvents: 'https://partiful.com/co/LHmEtfsSc909udzIop8H',
