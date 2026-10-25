@@ -1,7 +1,7 @@
 export type PracticeId = 'trees' | 'rain' | 'food' | 'native' | 'permeable'
 export type Checkpoint = 0 | 5 | 15
 export type OutcomeId = 'water' | 'shade' | 'soil' | 'community'
-export type View = 'game' | 'map' | 'review'
+export type View = 'game' | 'map' | 'review' | 'guild'
 export type Placement = PracticeId | null
 export type Layout = Placement[]
 export type Costs = { budget: number; water: number; care: number }

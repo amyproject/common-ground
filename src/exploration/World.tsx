@@ -23,6 +23,8 @@ import type { BayClimate } from '../hub/climate.ts'
 import { initialResources } from '../data/resources.ts'
 import type { Resource } from '../types.ts'
 import type { ExplorationState, PlaceId } from './types.ts'
+import { guildVenue } from '../guild/data.ts'
+import { GuildBridge } from '../guild/GuildBridge.tsx'
 
 type Point = number[]
 type MapMode = 'explore' | 'check' | 'create'
@@ -96,11 +98,11 @@ function PlaceDrawing({ id, point, visited, completed, onVisit, disabled, compac
   </g>
 }
 
-function EastBayMap({ map, state, location, travel, onVisit, mode, selected, projects, selectedProjectId, onChoose, onReopen, onProject, onRegionalView, climate, layer, onLayer, stops, visitedStops, onStop, focus, onViewChange }: {
+function EastBayMap({ map, state, location, travel, onVisit, mode, selected, projects, selectedProjectId, onChoose, onReopen, onProject, onRegionalView, climate, layer, onLayer, stops, visitedStops, onStop, focus, onViewChange, onGuild }: {
   map: NeighborhoodGeometry; state: ExplorationState; location: PlaceId; travel: PlaceId | null; onVisit: (id: PlaceId) => void
   mode: MapMode; selected: SelectedSite | null; projects: GardenProject[]; selectedProjectId: string | null
   onChoose: (point: Point, place?: PlaceId) => void; onReopen: () => void; onProject: (id: string) => void
-  onRegionalView: (regional: boolean) => void
+  onRegionalView: (regional: boolean) => void; onGuild: (id?: string) => void
   climate: BayClimate | null; layer: LayerId | null; onLayer: (layer: LayerId | null) => void
   stops: Resource[]; visitedStops: string[]; onStop: (stop: Resource) => void; focus: Focus
   onViewChange: (view: { center: { latitude: number; longitude: number } | null; zoom: number; west: number; east: number; north: number; south: number }) => void
@@ -173,6 +175,9 @@ function EastBayMap({ map, state, location, travel, onVisit, mode, selected, pro
   const lake = map.water.find(shape => shape.name === 'Lake Merritt')
   const lakePoint = lake ? [lake.points.reduce((sum, p) => sum + p[0], 0) / lake.points.length, lake.points.reduce((sum, p) => sum + p[1], 0) / lake.points.length] : null
   const selectedPoint = selected ? screenPoint(mapPoint(map, selected)) : null
+  const guildPoint = mapPoint(map, { latitude: guildVenue.coordinates[0], longitude: guildVenue.coordinates[1] })
+  const [guildX, guildY] = screenPoint(guildPoint)
+  const openGuildVenue = () => { if (!travel) { if (mode === 'explore') onGuild('opc-workdays'); else onChoose(guildPoint) } }
   return <div className={`neighborhood-canvas map-mode-${mode}`}>
     <p className="sr-only" id="map-picking-help">Tap an empty spot for a plant check. Drag to pan. Zoom out or use the globe to see the Bay Area; the frame returns to Oakland. Arrow keys move the map; Enter chooses its center. Garden pins open neighborhood projects.</p>
     <svg ref={svg} tabIndex={0} viewBox={`0 0 ${viewport.width} ${viewport.height}`} className="neighborhood-svg" role="group" aria-label={regionalView ? 'Interactive cartoon map of the Bay Area' : 'Interactive cartoon map of East Bay: West Oakland, Lake Merritt, and Ivy Hill'} aria-describedby="map-picking-help" onKeyDown={event => {
@@ -229,6 +234,19 @@ function EastBayMap({ map, state, location, travel, onVisit, mode, selected, pro
         if (point[0] < -80 || point[0] > viewport.width + 80 || point[1] < -80 || point[1] > viewport.height + 40) return null
         return <PlaceDrawing key={place.id} id={place.id} point={point} compact={compact} canvasWidth={viewport.width} visited={state.visited.includes(place.id)} completed={place.hotspots.filter(id => state.entries[id]).length} onVisit={id => mode === 'explore' ? onVisit(id) : onChoose(map.anchors[id]!.point, id)} disabled={Boolean(travel)} />
       })}
+      {!regionalView && guildX > -70 && guildX < viewport.width + 70 && guildY > -60 && guildY < viewport.height + 40 && <g className="guild-venue-pin" data-map-action="guild-venue" onClick={event => { event.stopPropagation(); openGuildVenue() }} onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.stopPropagation(); openGuildVenue() } }}>
+        <circle cx={guildX} cy={guildY} r="5" fill="#9d8150" stroke="#fffbee" strokeWidth="2" />
+        <g transform={`translate(${guildX} ${guildY - 44})`}>
+          <ellipse className="guild-venue-halo" rx="48" ry="24" fill="#f7e7bb" stroke="#c9b47b" strokeWidth="1.5" />
+          <rect x="-26" y="-22" width="52" height="33" rx="3" fill="#d7ba99" stroke="#aa8d69" strokeWidth="2" /><path d="M-32-22L0-41L32-22Z" fill="#a16f52" stroke="#886247" strokeWidth="2" />
+          <rect x="-18" y="-13" width="11" height="12" rx="2" fill="#bdd1bf" /><rect x="9" y="-13" width="11" height="12" rx="2" fill="#bdd1bf" /><rect x="-5" y="-9" width="10" height="20" rx="2" fill="#8f9c76" />
+          <path d="M-30 15Q-27-1-42 2Q-48 15-30 15M28 15Q30-2 44 3Q48 15 28 15" fill="#7f9a61" stroke="#65844b" strokeWidth="1.5" />
+        </g>
+        <g className="guild-venue-sign" role="button" tabIndex={travel ? -1 : 0} aria-disabled={Boolean(travel)} aria-label={mode === 'explore' ? 'Open Oakland Peace Center Guild activities' : 'Choose a spot at Oakland Peace Center'} transform={`translate(${Math.max(113, Math.min(viewport.width - 113, guildX))} ${guildY + 6})`}>
+          <rect x={compact ? -91 : -113} width={compact ? 182 : 226} height="43" rx="13" fill="#fff8e7" stroke="#c3aa74" strokeWidth="1.8" />
+          <text y="28" textAnchor="middle" fill="#74613d" fontSize={compact ? 16 : 18} fontWeight="650">{compact ? 'Peace Center · Guild' : 'Peace Center · Join in'}</text>
+        </g>
+      </g>}
       {projects.map(project => {
         const [x, y] = screenPoint(mapPoint(map, project.site))
         if (x < -40 || x > viewport.width + 40 || y < -40 || y > viewport.height + 50) return null
@@ -252,9 +270,9 @@ function EastBayMap({ map, state, location, travel, onVisit, mode, selected, pro
   </div>
 }
 
-export function World({ state, location, travel, onVisit, onJournal, onHow, selectedProjectId, onProjectChange, onNotice, initialFocus = null, initialMode = null, initialLayer = null }: {
+export function World({ state, location, travel, onVisit, onJournal, onHow, selectedProjectId, onProjectChange, onNotice, initialFocus = null, initialMode = null, initialLayer = null, onGuild }: {
   state: ExplorationState; location: PlaceId; travel: PlaceId | null; onVisit: (id: PlaceId) => void; onJournal: () => void; onHow: () => void
-  selectedProjectId: string | null; onProjectChange: (id: string | null) => void; onNotice: (text: string, error?: boolean) => void
+  selectedProjectId: string | null; onProjectChange: (id: string | null) => void; onNotice: (text: string, error?: boolean) => void; onGuild: (id?: string) => void
   initialFocus?: Focus; initialMode?: 'create' | 'check' | null; initialLayer?: LayerId | null
 }) {
   const [localMap, setMap] = useState<NeighborhoodGeometry | null>(null)
@@ -344,10 +362,11 @@ export function World({ state, location, travel, onVisit, onJournal, onHow, sele
     <section className="explore-hero"><div><h1>{regionalView ? <>Bay <em>Area.</em></> : <>Oakland, <em>up close.</em></>}</h1><p>{regionalView ? `${bayStops.length + places.length} places across nine counties. Tap one to visit.` : 'Four playable places. Zoom out for the whole Bay Area.'}</p></div><div className="hero-pills"><a className="hub-button hub-button-volunteer explore-join" href="/join"><Sprout size={19} />Volunteer with the Guild</a><button className="journal-pill passport-pill" onClick={() => { onProjectChange(null); setCommunityDialog('passport') }}><Stamp size={24} /><span><strong>Field stamps</strong><small>{stamps}/5 climate zones</small></span><ArrowRight size={19} /></button><button className="journal-pill" onClick={onJournal}><BookOpen size={24} /><span><strong>My journal</strong><small>{count}/{hotspotOrder.length} discoveries</small></span><ArrowRight size={19} /></button></div></section>
     <div className="world-toolbar" role="group" aria-label="Explore, check, and grow"><div className="world-modes"><button aria-pressed={mode === 'explore'} disabled={Boolean(travel)} onClick={() => pickMode('explore')}><Compass size={20} />Explore</button><button aria-pressed={mode === 'check'} disabled={Boolean(travel)} onClick={() => pickMode('check')}><MapPin size={20} />Check a spot</button><button aria-pressed={mode === 'create'} disabled={Boolean(travel)} onClick={() => pickMode('create')}><Sprout size={21} />Start a garden</button></div><button className="world-projects-button" aria-label="Garden projects" disabled={Boolean(travel)} onClick={openBoard}><Users size={21} />Projects <span>{client.loading ? '…' : client.error ? '?' : client.projects.length}</span></button></div>
     <section className="world-panel" aria-label={regionalView ? 'Explore the Bay Area' : 'Explore East Bay'}>
-      {map ? <EastBayMap map={map} state={state} location={location} travel={travel} onVisit={onVisit} mode={mode} selected={site} projects={client.projects} selectedProjectId={selectedProjectId} onChoose={choose} onReopen={() => setCommunityDialog('site')} onProject={openProject} onRegionalView={setRegionalView} climate={climate} layer={layer} onLayer={setLayer} stops={bayStops} visitedStops={passport.visited} onStop={openStop} focus={initialFocus} onViewChange={setView} /> : <div className="neighborhood-canvas view-loading" role="status">{error ? <><p>Map couldn’t load.</p><button className="button button-secondary" onClick={() => setAttempt(value => value + 1)}>Try again</button></> : 'Opening East Bay…'}</div>}
+      {map ? <EastBayMap map={map} state={state} location={location} travel={travel} onVisit={onVisit} mode={mode} selected={site} projects={client.projects} selectedProjectId={selectedProjectId} onChoose={choose} onReopen={() => setCommunityDialog('site')} onProject={openProject} onRegionalView={setRegionalView} climate={climate} layer={layer} onLayer={setLayer} stops={bayStops} visitedStops={passport.visited} onStop={openStop} focus={initialFocus} onViewChange={setView} onGuild={onGuild} /> : <div className="neighborhood-canvas view-loading" role="status">{error ? <><p>Map couldn’t load.</p><button className="button button-secondary" onClick={() => setAttempt(value => value + 1)}>Try again</button></> : 'Opening East Bay…'}</div>}
     </section>
     {regionError && <p className="regional-map-error" role="status">Bay Area overview couldn’t load. <button onClick={() => setRegionAttempt(value => value + 1)}>Retry overview</button></p>}
     <p className="world-community-note">{client.error ? <><span role="status">Garden projects couldn’t refresh.</span><button onClick={() => { void client.refresh() }}>Retry</button></> : <><Sprout size={17} />Projects shared locally · Pins are proposals</>}</p>
+    <GuildBridge onGuild={() => onGuild()} />
     {regionalView ? <section className="stop-strip" aria-label="Places in view">
       <div className="stop-strip-head"><h2>{inView.length ? <>In view <em>({inView.length})</em></> : 'Pan the map to find places'}</h2><span>Closest to the map’s center first</span></div>
       <div className="stop-strip-row">{nearby.slice(0, 12).map(stop => <button key={stop.id} className={`stop-chip ${passport.visited.includes(stop.id) ? 'visited' : ''}`} disabled={Boolean(travel)} onClick={() => openStop(stop)}><StopArt kind={stop.kind} size={46} /><span><strong>{stop.name}</strong><small>{stop.city}{passport.visited.includes(stop.id) ? ' · visited' : ''}</small></span></button>)}</div>

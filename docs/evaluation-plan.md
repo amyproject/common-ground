@@ -15,6 +15,8 @@ Ask each participant to complete these tasks:
 5. Compare two shared-space ideas and explain who benefits and what each requires.
 6. At the library, use field notes to write a neighborhood idea and a question to ask a steward. Download the journal.
 7. Open a real place’s provider information and distinguish the factual listing from the illustrated experiment.
+8. Find the Peace Center or Guild view; identify a real event's date/status and official participation link without completing a game.
+9. Try the preparation walk, explain one question to ask a steward, and find the next-event or volunteer-interest link.
 
 Observe completion, confusion, and how the participant reasons. A click, download, or stated intention is not evidence of ecological improvement or real-world participation.
 
@@ -34,6 +36,16 @@ Score explanations using a simple 0–2 rubric: no causal explanation, partial e
 ## Reviewer and community check
 
 Ask one prospective Guild reviewer to process a clear correction and a stale or poorly sourced correction. Note the time and the information needed to make the decision. Have a community steward assess a generated proposal for clarity, missing local context, maintenance assumptions, and an appropriate next step.
+
+The [content-review pack](content-review-pack.md) lists the playable routes, assumptions, and pending review fields. A completed pack is preparation for review, not evidence that review occurred.
+
+## Organizer workflow comparison
+
+Ask a willing organizer to prepare the same draft using their current process and the workday kit. Use a fictional date/assignment rather than actual private attendee data. Record task time, revisions needed, missing responsibilities, and whether the result can be handed to another organizer.
+
+Have them edit tasks, role counts, and agenda; download the role CSV and Markdown kit; duplicate for another draft; and reload. Check that the new copy clears the old date, RSVP link, and nicknames while retaining useful edits. Ask them to distinguish a draft role plan from an RSVP list or attendance record.
+
+Review whether the source adaptation and wording feel appropriate to the Guild. Do not claim minutes saved until this comparison happens. Clicking a next-event link does not establish return attendance. A later operational pilot must separately test cross-device use, shared publishing, permissions, and the host's approved follow-up process.
 
 ## Success criteria to discuss with partners
 

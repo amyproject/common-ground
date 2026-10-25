@@ -6,6 +6,7 @@ dist/
 .env.*
 !.env.example
 public/projects/
+public/activities/
 public/data/
 scripts/data/*.osm
 scripts/data/oakland-weather-*.json

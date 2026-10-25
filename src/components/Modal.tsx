@@ -12,7 +12,8 @@ export function Modal({ title, children, onClose, wide = false }: { title: strin
     element.showModal()
     return () => {
       element.close()
-      previous?.focus()
+      if (previous?.isConnected && previous !== document.body) previous.focus()
+      else document.querySelector<HTMLElement>('main h1')?.focus()
     }
   }, [])
   return <dialog ref={dialog} className={`modal ${wide ? 'modal-wide' : ''}`} aria-label={title} onCancel={(event) => {

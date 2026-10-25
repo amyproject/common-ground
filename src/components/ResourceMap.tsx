@@ -5,6 +5,7 @@ import { practices, practiceById } from '../data/practices.ts'
 import { filterResources } from '../lib/directory.ts'
 import { PracticeIcon } from './PracticeIcon.tsx'
 import type { PracticeId, Resource, ResourceCategory } from '../types.ts'
+import { GuildBridge } from '../guild/GuildBridge.tsx'
 
 const categoryColors: Record<ResourceCategory, string> = { Garden: '#3c7552', Learning: '#507d83', 'Tools & seeds': '#a77947' }
 const categoryIcons = { Garden: Sprout, Learning: BookOpen, 'Tools & seeds': Wrench }
@@ -82,10 +83,10 @@ function LeafletMap({ resources, selectedId, onSelect }: { resources: Resource[]
 }
 
 export function ResourceMap({
-  resources, initialPractices, initialResourceId, onOpen, onReview, onGame,
+  resources, initialPractices, initialResourceId, onOpen, onReview, onGame, onGuild,
 }: {
   resources: Resource[]; initialPractices: PracticeId[]; initialResourceId: string | null
-  onOpen: (resource: Resource) => void; onReview: () => void; onGame: () => void
+  onOpen: (resource: Resource) => void; onReview: () => void; onGame: () => void; onGuild: () => void
 }) {
   const [search, setSearch] = useState('')
   const [city, setCity] = useState('All')
@@ -99,6 +100,7 @@ export function ResourceMap({
   const hasFilters = Boolean(search || city !== 'All' || category !== 'All' || chosen.length)
   return <>
     <section className="hero map-hero"><div><div className="eyebrow"><Leaf size={14} />Rooted in the Bay Area</div><h1>Find your people.<br /><em>Grow something together.</em></h1></div><div className="hero-copy"><p>Real places to learn, grow, and get involved.<br className="desktop-break" /> Carry your neighborhood discoveries into<br className="desktop-break" /> the community around you.</p><button className="text-button" onClick={onGame}>Back to the map <ArrowRight size={17} /></button></div></section>
+    <GuildBridge compact onGuild={onGuild} />
     <section className="directory" aria-label="Bay Area resource directory">
       <div className="directory-controls">
         <label className="search-field"><Search size={19} /><input aria-label="Search resources" placeholder="Search a place, neighborhood, or idea…" value={search} onChange={(event) => setSearch(event.target.value)} />{search && <button className="icon-button" aria-label="Clear search" onClick={() => setSearch('')}><X size={16} /></button>}</label>

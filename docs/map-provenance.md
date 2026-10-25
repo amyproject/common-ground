@@ -22,10 +22,13 @@ The dataset contains 10,567 road segments, 16,716 building footprints, 1,308 gre
 | deFremery Park | 1651 Adeline Street | `37.8124217, -122.2870094` |
 | West Oakland Library | 1801 Adeline Street | `37.81295879, -122.28537639` |
 | Gravity Garden | 2519 7th Avenue | `37.8019293, -122.2421346` |
+| Oakland Peace Center — Guild participation destination | 111 Fairmount Avenue | `37.8167292, -122.2609187` |
 
 The first three addresses were checked October 24 against ANV, the City of Oakland, and Oakland Public Library. Gravity Garden's address was checked October 25 against the OUFP-linked Garden Steward newsletter: https://garden-steward.beehiiv.com/p/earth-day-block-party-2026. OUFP describes its neighborhood as Ivy Hill: https://www.oufp.org/.
 
 Gravity Garden's point is geocoded from its provider-published address. OSM way 477141854 is an address/building reference, **not a surveyed garden boundary or entrance**. Other anchors use mapped public sites and checked addresses. Destination drawings, beds, benches, people, interiors, learning experiments, and future indicators are stylized teaching material. Their positions and quantities do not establish site conditions or access.
+
+The Peace Center address was checked October 25 against the [public October 25 workday](https://partiful.com/e/y11uw9Cv7OA7BVn8LSVC). Its approximate point comes from the address/building reference [OSM relation 17651405](https://www.openstreetmap.org/relation/17651405), checked the same day. It opens Guild activities rather than a fifth game lesson; no additional character route or surveyed garden outline is asserted. The preparation illustration's tap, bench, beds, and sun positions are authored. The October 15 planning event's location is gated on Partiful, so it has no inferred event pin.
 
 ## Regeneration and distribution
 
@@ -51,7 +54,7 @@ The earlier `west-oakland-map.json` and `ivy-hill-map.json` remain as historical
 - Source check: **October 25, 2026 (UTC)**. Exact Natural Earth revision, file URLs, SHA-256 hashes, and terms are retained in `scripts/data/bay-area-source.json`. The exact single Overpass query, endpoint, extract timestamp, and filtered public node records are in `scripts/data/bay-area-places.json`.
 - Derived layer: `src/data/bay-area-map.json`, served at `/data/bay-area-map.json`, about **200 KB uncompressed**. It contains 4 land polygons, 2 lake polygons, 45 urban-area polygons, and 187 clipped road lines. Population fields are historical hints for label ordering, not displayed population statistics.
 
-The overview stays in geographic coordinates, projected into the unchanged local map coordinate system at render time. Polygon holes are preserved. Small features, exact shorelines, streets, parcels, and site conditions are unresolved at this scale. The detailed Oakland layer reappears on zoom-in; elsewhere site geometry and local environmental evidence remain unknown. Four learning places are grouped as “Oakland · 4 places” in the overview. City labels move the camera rather than inventing visitable sites or educational activities.
+The overview stays in geographic coordinates, projected into the unchanged local map coordinate system at render time. Polygon holes are preserved. Small features, exact shorelines, streets, parcels, and site conditions are unresolved at this scale. The detailed Oakland layer reappears on zoom-in; elsewhere site geometry and local environmental evidence remain unknown. Four learning places and the Guild participation destination are grouped as “Oakland · Explore” in the overview. City labels move the camera rather than inventing visitable sites or educational activities.
 
 Camera helpers in `src/exploration/map-camera.ts` calculate a viewport-dependent regional fit, finite zoom limits, panning bounds, and screen-to-world picks. The globe fits the region, the frame restores the original view, and garden pins use their saved geographic coordinates at every zoom.
 

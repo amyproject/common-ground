@@ -7,6 +7,24 @@ const checkedAt = '2026-10-24'
 // A source check is not a confirmation from the project steward.
 const eastBayResources: Resource[] = [
   {
+    id: 'oakland-peace-center',
+    name: 'Oakland Peace Center Gardens',
+    city: 'Oakland',
+    neighborhood: 'Westlake',
+    category: 'Garden',
+    description: 'A community garden where the East Bay Permaculture Guild, Oakland Peace Center, and Wood Street Commons gather to grow and share food.',
+    access: 'Explore the Guild’s official workdays and volunteer-interest form. Check the current event for dates, arrival instructions, and participation arrangements.',
+    address: '111 Fairmount Avenue, Oakland',
+    coordinates: [37.8167292, -122.2609187],
+    practices: ['food', 'rain', 'native'],
+    action: 'Explore official Guild events',
+    url: 'https://partiful.com/u/PcnFYcpQOwCLdVFxzZ3i',
+    sourceUrl: 'https://partiful.com/e/y11uw9Cv7OA7BVn8LSVC',
+    sourcePublisher: 'East Bay Permaculture Guild and OPC event hosts',
+    checkedAt: '2026-10-25',
+    status: 'source-checked',
+  },
+  {
     id: 'anv-west-oakland',
     name: 'West Oakland Farm Park',
     city: 'Oakland',

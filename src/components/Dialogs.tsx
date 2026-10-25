@@ -11,7 +11,7 @@ import { Timeline } from './Game.tsx'
 import { PracticeIcon } from './PracticeIcon.tsx'
 import type { Checkpoint, Layout, Resource, SavedDesign, Suggestion } from '../types.ts'
 
-export function ResourceDetail({ resource, onCorrect }: { resource: Resource; onCorrect: () => void }) {
+export function ResourceDetail({ resource, onCorrect, onGuild }: { resource: Resource; onCorrect: () => void; onGuild?: () => void }) {
   return <>
     <div className="dialog-eyebrow"><MapPin size={14} />{resource.city} · {resource.category}</div>
     <h2 className="dialog-title">{resource.name}</h2><p className="dialog-lead">{resource.description}</p>
@@ -20,7 +20,7 @@ export function ResourceDetail({ resource, onCorrect }: { resource: Resource; on
     <div className="source-box"><FileCheck2 size={19} /><div><strong>Public source checked · {formatSourceDate(resource.checkedAt)}</strong><p>Checked against {resource.sourcePublisher}’s website. Not confirmed by a project steward.</p><a href={resource.sourceUrl} target="_blank" rel="noreferrer">Read the original source <ExternalLink size={12} /></a></div></div>
     {resource.status === 'demo-reviewed' && <div className="source-box demo-source"><Check size={18} /><div><strong>Access information reviewed in this demo</strong><p>This browser has a local review by {resource.reviewer?.toLowerCase()}. The original source-check date stays separate.</p>{resource.reviewSourceUrl && <a href={resource.reviewSourceUrl} target="_blank" rel="noreferrer">Review source <ExternalLink size={12} /></a>}</div></div>}
     {resource.status === 'inactive' && <div className="form-error" role="status">Marked inactive in this demo. This listing is hidden from discovery.</div>}
-    <div className="dialog-actions"><a className="button button-primary" href={resource.url} target="_blank" rel="noreferrer">{resource.action} <ExternalLink size={15} /></a><button className="button button-secondary" onClick={onCorrect}>Suggest a correction</button></div>
+    <div className="dialog-actions">{onGuild && <button className="button button-primary" onClick={onGuild}>Find a Guild activity <ArrowRight size={17} /></button>}<a className={`button ${onGuild ? 'button-secondary' : 'button-primary'}`} href={resource.url} target="_blank" rel="noreferrer">{resource.action} <ExternalLink size={15} /></a><button className="button button-secondary" onClick={onCorrect}>Suggest a correction</button></div>
     <p className="dialog-footnote">Practice tags describe related learning or participation. They do not certify this site’s environmental performance.</p>
     <a className="text-button muted" href={`/projects/${resource.id}/index.html`} target="_blank" rel="noreferrer">Open the readable resource page <ArrowRight size={14} /></a>
   </>

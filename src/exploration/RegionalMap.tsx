@@ -56,7 +56,7 @@ export function RegionalLabels({ map, width, height, screenPoint, onCity, onOakl
     const [x, y] = screenPoint(point)
     if (x < 12 || x > width - 12 || y < 18 || y > height - 50) continue
     const oakland = city.name === 'Oakland'
-    const name = oakland ? 'Oakland · 4 lessons' : city.name
+    const name = oakland ? 'Oakland · Explore' : city.name
     const labelWidth = name.length * fontSize * .55 + 24
     const positions = [[10, -18], [-labelWidth - 10, -18], [-labelWidth / 2, 14], [-labelWidth / 2, -52]]
     const chosen = positions.map(([dx, dy]) => ({ dx, dy, left: x + dx, top: y + dy, right: x + dx + labelWidth, bottom: y + dy + 37 }))

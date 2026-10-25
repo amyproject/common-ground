@@ -10,6 +10,7 @@ import { GravityArrivalArt } from './GardenArt.tsx'
 import { HabitatLesson, SharingLesson } from './Gravity.tsx'
 import { formatSourceDate } from '../lib/dates.ts'
 import type { ExplorationState, FarmChoice, FarmRun, FarmTime, HotspotId, ParkChoice, PlaceId, Weather } from './types.ts'
+import { GuildBridge } from '../guild/GuildBridge.tsx'
 
 function CompostLesson({ state, onComplete, onNext }: LessonProps) {
   const [stage, setStage] = useState(0)
@@ -171,7 +172,7 @@ function IdeaLesson({ state, onUpdate, onComplete, onDownload }: LessonProps & {
   </LessonFrame>
 }
 
-export function PlaceView({ placeId, active, state, onHotspot, onBack, onUpdate, onComplete, onAbout, onDownload }: { placeId: PlaceId; active: HotspotId | null; state: ExplorationState; onHotspot: (id: HotspotId | null) => void; onBack: () => void; onUpdate: Update; onComplete: SaveEntry; onAbout: () => void; onDownload: () => void }) {
+export function PlaceView({ placeId, active, state, onHotspot, onBack, onUpdate, onComplete, onAbout, onDownload, onGuild }: { placeId: PlaceId; active: HotspotId | null; state: ExplorationState; onHotspot: (id: HotspotId | null) => void; onBack: () => void; onUpdate: Update; onComplete: SaveEntry; onAbout: () => void; onDownload: () => void; onGuild: () => void }) {
   const place = placeById[placeId]
   const lessonProps: LessonProps = { state, onUpdate, onComplete, onNext: onHotspot }
   return <div className="place-view">
@@ -183,6 +184,7 @@ export function PlaceView({ placeId, active, state, onHotspot, onBack, onUpdate,
       <div className="arrival-activities">{place.hotspots.map((id, i) => <button key={id} onClick={() => onHotspot(id)}><span>{state.entries[id] ? <Check size={20} /> : i + 1}</span><span><strong>{hotspots[id].name}</strong></span><ArrowRight size={19} /></button>)}</div>
       <details className="lesson-details"><summary>About this place</summary><p>{place.fact}</p><button className="text-button" onClick={onAbout}>Sources & visiting <ArrowRight size={17} /></button></details>
     </LessonFrame> : active === 'compost' ? <CompostLesson {...lessonProps} /> : active === 'soil' || active === 'water' ? <FarmLesson key={active} {...lessonProps} id={active} /> : active === 'trees' || active === 'community' ? <ParkLesson key={active} {...lessonProps} id={active} /> : active === 'shade' ? <ShadeLesson {...lessonProps} /> : active === 'habitat' ? <HabitatLesson {...lessonProps} /> : active === 'sharing' ? <SharingLesson {...lessonProps} /> : active === 'journal' ? <LibraryJournalLesson {...lessonProps} /> : <IdeaLesson {...lessonProps} onDownload={onDownload} />}
+    <GuildBridge compact onGuild={onGuild} />
     <div className="place-footer"><button className="text-button" onClick={onBack}><ArrowLeft size={18} />East Bay map</button><a href={place.actionUrl} target="_blank" rel="noreferrer">Visit the real place <ExternalLink size={16} /></a><span>Checked {formatSourceDate(place.checkedAt)}</span></div>
   </div>
 }

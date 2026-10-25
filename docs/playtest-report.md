@@ -1,6 +1,6 @@
 # Local prototype verification
 
-Latest verification: **October 25, 2026 (UTC)**, with **41 passing automated tests**, a passing TypeScript/production build, and browser checks for Bay Area zooming, planting checks, and shared garden projects. The dated sections below record the prototype's successive versions.
+Latest verification: **October 25, 2026 (UTC)**, with **51 passing automated tests**, a passing TypeScript/production build, and browser checks for Guild participation, preparation, and the reusable workday kit. Earlier sections record Bay Area zooming, planting checks, garden projects, and the prototype's successive versions.
 
 ## Initial exploration prototype — October 24, 2026
 
@@ -108,3 +108,23 @@ The site check is a preliminary, source-attributed shortlist using regional mode
 Screenshots: `artifacts/bay-area-overview.png`, `artifacts/bay-area-overview-mobile.png`, `artifacts/bay-area-site-check.png`, and `artifacts/bay-area-garden-project-mobile.png`. The garden is a software playtest, not a real site-work invitation.
 
 The wider map is generalized geographic context, not new site-level evidence or new educational destinations. Expanding detailed coverage and lessons needs additional local data, source checks, and review.
+
+## Guild participation and workday preparation — October 25, 2026 (UTC)
+
+- **51 automated tests pass.** Ten new checks cover event boundaries and safe calendar exports, timezone handling, saved draft validation, duplication, date/URL/agenda/helper validation, edited Markdown/CSV exports, spreadsheet formula protection, and preservation of existing listing corrections.
+- TypeScript and the production build pass without a bundle-size advisory. The main JavaScript chunk is approximately 466 KB / 144 KB gzip; the Guild view loads separately at approximately 42 KB / 12 KB gzip.
+- Entered Guild activities through the Peace Center's visible map sign with both mouse and keyboard. Closing a dialog restores its still-mounted trigger; when navigating from the map removes that trigger, focus returns to the Guild heading. The regional Oakland control still restores the detailed learning map.
+- The October 25 workday displayed **Happening now** during the playtest, with the verified official RSVP destination. Its actual downloaded calendar contained `20261025T170000Z` to `20261025T210000Z`, matching 10 a.m.–2 p.m. Pacific. The calendar is a one-time copy, not an RSVP.
+- October 12 and 15 records appeared in the past-event archive and linked to finding another gathering. The planning event showed no inferred precise venue or event pin. Past records offered no calendar download.
+- Completed the garden walk's water, shade, and soil observations, tested explanatory feedback, and changed the illustrated sun. Reload preserved the three explored questions and the returning-visitor choice; neither represents attendance or assessed competence.
+- Edited a clearly labeled **Demo water and planting workday** in an isolated preview origin. The fictional test date was **November 8, 2026**, with an `example.org` RSVP placeholder, custom tasks, an 8:45 setup item, eight garden helpers, and a demo lead nickname. This was not a real Guild announcement.
+- Downloaded and inspected the actual Markdown and role-plan CSV. They contained the edited date, agenda, tasks, helper targets, and nickname, with draft labels. Copying the invitation succeeded; no message or form was sent.
+- Reusing the kit retained tasks, agenda, and helper targets while clearing the date, RSVP link, and lead assignments. Both drafts survived reload; selecting the original restored its original fields. Date/time input changes and validation of a required role hidden inside a collapsed editor were exercised and corrected.
+- Guild activities, the garden walk, and the kit fit **390 × 844** and **320 × 844** viewports without horizontal page overflow. Kit fields measured 17 pixels. Temporary viewport overrides were reset.
+- The print stylesheet was visually checked through browser print-media emulation: the draft, tasks, agenda, roles, checklist, and source remained visible while navigation and controls were hidden. Native print-preview automation stalled; physical printing and printed pagination were not verified.
+- Public resource/activity pages and JSON returned HTTP 200. The exports contain **16 directory entries**, **15 public map locations**, **three programs**, and **three dated activities**; no saved workday drafts are exported. The gated planning venue stays unset.
+- The final browser check captured no warning/error logs. Reloading the user's live app retained **2 discoveries and one existing garden project**. Playtest drafts used a separate preview origin and database.
+
+Screenshots: `artifacts/guild-participation-desktop.png`, `artifacts/guild-garden-walk-desktop.png`, `artifacts/guild-garden-walk-mobile.png`, `artifacts/guild-workday-mobile.png`, and `artifacts/guild-workday-print.png`. Copies of the actual demo downloads are `artifacts/guild-workday-demo.md` and `artifacts/guild-workday-demo.csv`.
+
+The public tools/SOP review is documented in `docs/guild-tool-review.md`; knowledgeable content and host review remain pending in `docs/content-review-pack.md`. These are software checks, not evidence of improved learning, reduced organizer time, return participation, or Guild adoption. Drafts and listing corrections remain browser-local; shared hosting, attendance, and outreach integrations are future work.
