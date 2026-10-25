@@ -1,6 +1,6 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import type { PointerEvent } from 'react'
-import { ArrowRight, BookOpen, Check, Compass, Footprints, Globe2, MapPin, Minus, Plus, Scan, Sprout, Users } from 'lucide-react'
+import { ArrowRight, BookOpen, Check, Compass, Footprints, Globe2, Layers, MapPin, Minus, Plus, Scan, Sprout, Stamp, Users } from 'lucide-react'
 import { Modal } from '../components/Modal.tsx'
 import { useCommunity } from '../community/client.ts'
 import { describeSite, geographicPoint, inPilot, mapPoint } from '../community/geography.ts'
@@ -16,11 +16,21 @@ import type { BayAreaGeometry, NeighborhoodGeometry } from './geography.ts'
 import { bayAreaCamera, clampCamera, initialCamera, screenToWorld, startingScale, zoomCamera } from './map-camera.ts'
 import type { Camera } from './map-camera.ts'
 import { RegionalBase, RegionalLabels } from './RegionalMap.tsx'
+import { ClimateGrid, ClimateLegend, layerKeys, layerStyles, PassportDialog, StopArt, StopCard, StopMarkers, usePassport } from './BayRegion.tsx'
+import type { LayerId } from './BayRegion.tsx'
+import { gridValue } from '../hub/climate.ts'
+import type { BayClimate } from '../hub/climate.ts'
+import { initialResources } from '../data/resources.ts'
+import type { Resource } from '../types.ts'
 import type { ExplorationState, PlaceId } from './types.ts'
 
 type Point = number[]
 type MapMode = 'explore' | 'check' | 'create'
-type CommunityDialog = 'site' | 'create' | 'board' | 'project' | 'edit' | null
+type CommunityDialog = 'site' | 'create' | 'board' | 'project' | 'edit' | 'stop' | 'passport' | null
+type Focus = { latitude: number; longitude: number } | null
+const defaultKind = (resource: Resource): Resource['kind'] => resource.kind ?? (resource.category === 'Garden' ? 'garden' : 'learning')
+// Regional stops: every mapped place outside the detailed Oakland pilot.
+const bayStops = initialResources.filter(resource => resource.coordinates && !inPilot(resource.coordinates[0], resource.coordinates[1])).map(resource => ({ ...resource, kind: defaultKind(resource) }))
 const line = (points: Point[]) => points.map((p, i) => `${i ? 'L' : 'M'}${p[0]} ${p[1]}`).join(' ')
 const closedLine = (points: Point[]) => `${line(points)} Z`
 const roadWidth = (kind: string) => kind === 'motorway' || kind === 'trunk' ? 22 : kind === 'secondary' || kind === 'tertiary' ? 14 : kind === 'residential' ? 9 : kind === 'footway' || kind === 'path' ? 3 : 6
@@ -86,16 +96,25 @@ function PlaceDrawing({ id, point, visited, completed, onVisit, disabled, compac
   </g>
 }
 
-function EastBayMap({ map, state, location, travel, onVisit, mode, selected, projects, selectedProjectId, onChoose, onReopen, onProject, onRegionalView }: {
+function EastBayMap({ map, state, location, travel, onVisit, mode, selected, projects, selectedProjectId, onChoose, onReopen, onProject, onRegionalView, climate, layer, onLayer, stops, visitedStops, onStop, focus, onViewChange }: {
   map: NeighborhoodGeometry; state: ExplorationState; location: PlaceId; travel: PlaceId | null; onVisit: (id: PlaceId) => void
   mode: MapMode; selected: SelectedSite | null; projects: GardenProject[]; selectedProjectId: string | null
   onChoose: (point: Point, place?: PlaceId) => void; onReopen: () => void; onProject: (id: string) => void
   onRegionalView: (regional: boolean) => void
+  climate: BayClimate | null; layer: LayerId | null; onLayer: (layer: LayerId | null) => void
+  stops: Resource[]; visitedStops: string[]; onStop: (stop: Resource) => void; focus: Focus
+  onViewChange: (view: { center: { latitude: number; longitude: number } | null; zoom: number; west: number; east: number; north: number; south: number }) => void
 }) {
   const svg = useRef<SVGSVGElement>(null)
   const pan = useRef<{ x: number; y: number; camera: Camera; pointer: number; moved: boolean } | null>(null)
   const [viewport, setViewport] = useState({ width: 1200, height: 740 })
-  const [camera, setCamera] = useState(() => initialCamera(map))
+  const [camera, setCamera] = useState(() => {
+    if (!focus) return initialCamera(map)
+    const [x, y] = mapPoint(map, focus)
+    return inPilot(focus.latitude, focus.longitude) ? { zoom: 1.5, x, y } : { zoom: .35, x, y }
+  })
+  const [hoveredStop, setHoveredStop] = useState<string | null>(null)
+  const [readout, setReadout] = useState<{ x: number; y: number; text: string } | null>(null)
   const focusedProject = useRef<string | null>(null)
   useEffect(() => {
     const element = svg.current!
@@ -114,6 +133,13 @@ function EastBayMap({ map, state, location, travel, onVisit, mode, selected, pro
   const zoom = (direction: number) => setCamera(current => zoomCamera(map, viewport, current, direction))
   const restoreOakland = () => setCamera(initialCamera(map))
   useEffect(() => { onRegionalView(regionalView) }, [regionalView, onRegionalView])
+  useEffect(() => {
+    const halfW = viewport.width / 2 / scale, halfH = viewport.height / 2 / scale
+    const [west, south, east, north] = map.bounds
+    const lon = (x: number) => west + (x - 65) / (map.width - 130) * (east - west), lat = (y: number) => north - (y - 50) / (map.height - 100) * (north - south)
+    onViewChange({ center, zoom: camera.zoom, west: lon(camera.x - halfW), east: lon(camera.x + halfW), north: lat(camera.y - halfH), south: lat(camera.y + halfH) })
+  }, [camera.x, camera.y, camera.zoom, viewport.width, viewport.height])
+  useEffect(() => { if (layer && map.region && camera.zoom >= .7) setCamera(bayAreaCamera(map, viewport)) }, [layer, Boolean(map.region)])
   useEffect(() => { setCamera(current => clampCamera(map, viewport, current)) }, [map, viewport])
   useEffect(() => { if (travel) setCamera(initialCamera(map)) }, [travel, map])
   useEffect(() => {
@@ -160,14 +186,22 @@ function EastBayMap({ map, state, location, travel, onVisit, mode, selected, pro
       pan.current = { x: event.clientX, y: event.clientY, camera, pointer: event.pointerId, moved: false }
       svg.current!.setPointerCapture(event.pointerId)
     }} onPointerMove={event => {
+      if (!pan.current && layer && climate && regionalView && svg.current) {
+        const bounds = svg.current.getBoundingClientRect()
+        const sx = (event.clientX - bounds.left) * viewport.width / bounds.width, sy = (event.clientY - bounds.top) * viewport.height / bounds.height
+        const where = geographicPoint(map, screenToWorld(map, viewport, camera, [sx, sy]))
+        const raw = where ? gridValue(climate, layerKeys[layer], where) : null
+        setReadout(raw === null ? null : { x: sx, y: sy, text: `${layerStyles[layer].short}: ${layerStyles[layer].unit(layerStyles[layer].toDisplay(raw))}` })
+      }
       if (!pan.current || pan.current.pointer !== event.pointerId) return
       const start = pan.current
       if (Math.hypot(event.clientX - start.x, event.clientY - start.y) < 7 && !start.moved) return
       start.moved = true
       setCamera(clampCamera(map, viewport, { ...start.camera, x: start.camera.x - (event.clientX - start.x) / scale, y: start.camera.y - (event.clientY - start.y) / scale }))
-    }} onPointerUp={event => finishPan(event)} onPointerCancel={event => finishPan(event, true)}>
+    }} onPointerUp={event => finishPan(event)} onPointerCancel={event => finishPan(event, true)} onPointerLeave={() => setReadout(null)}>
       <g transform={`translate(${tx} ${ty}) scale(${scale})`}>
         <RegionalBase map={map} scale={scale} />
+        {climate && layer && regionalView && <ClimateGrid map={map} climate={climate} layer={layer} />}
         <MapBase map={map} hidden={camera.zoom < .7} />
         {routePath && <path d={routePath} fill="none" stroke="#9e7f3c" strokeWidth={3 / scale} strokeDasharray={`${5 / scale} ${6 / scale}`} opacity=".9" />}
         {routePath ? <g key={travel} className="map-walker"><Person scale={.6 / scale} walking /><animateMotion path={routePath} dur="1.3s" fill="freeze" /></g> : !regionalView && arrival && <Person x={arrival[0]} y={arrival[1]} scale={.55 / scale} />}
@@ -185,7 +219,9 @@ function EastBayMap({ map, state, location, travel, onVisit, mode, selected, pro
         const [x, y] = screenPoint(road.points[Math.floor(road.points.length / 2)])
         return <text key={road.id} x={x} y={y} transform={`rotate(${angle} ${x} ${y})`}>{road.name.replace(' Street', ' St').replace(' Avenue', ' Ave')}</text>
       })}</g>}
-      {regionalView && <RegionalLabels map={map} width={viewport.width} height={viewport.height} screenPoint={screenPoint} compact={compact} overview={camera.zoom < .12} picking={mode !== 'explore'} onOakland={restoreOakland} onCity={point => setCamera(clampCamera(map, viewport, { zoom: .35, x: point[0], y: point[1] }))} />}
+      {regionalView && <RegionalLabels avoid={stops.flatMap(stop => { const [x, y] = screenPoint(mapPoint(map, { latitude: stop.coordinates![0], longitude: stop.coordinates![1] })); return [{ left: x - 24, top: y - 24, right: x + 24, bottom: y + 24 }] })} map={map} width={viewport.width} height={viewport.height} screenPoint={screenPoint} compact={compact} overview={camera.zoom < .12} picking={mode !== 'explore'} onOakland={restoreOakland} onCity={point => setCamera(clampCamera(map, viewport, { zoom: .35, x: point[0], y: point[1] }))} />}
+      {regionalView && <StopMarkers map={map} stops={stops} screenPoint={screenPoint} width={viewport.width} height={viewport.height} zoom={camera.zoom} visited={visitedStops} hovered={hoveredStop} onHover={setHoveredStop} onOpen={onStop} disabled={Boolean(travel) || mode !== 'explore'} />}
+      {readout && <g className="climate-readout" transform={`translate(${Math.min(viewport.width - 190, readout.x + 14)} ${Math.max(10, readout.y - 40)})`} pointerEvents="none"><rect width={readout.text.length * 7.2 + 20} height="28" rx="8" fill="#263e2e" opacity=".9" /><text x="10" y="19" fill="#f5f7ec" fontSize="13" fontWeight="600">{readout.text}</text></g>}
       {!regionalView && places.map(place => {
         const anchor = map.anchors[place.id]
         if (!anchor) return null
@@ -207,6 +243,8 @@ function EastBayMap({ map, state, location, travel, onVisit, mode, selected, pro
       {selectedPoint && <g className="selected-site-pin" transform={`translate(${selectedPoint[0]} ${selectedPoint[1]})`} data-map-action="selected-site" role="button" tabIndex={travel ? -1 : 0} aria-label="Reopen selected spot planting check" onClick={event => { event.stopPropagation(); if (!travel) onReopen() }} onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.stopPropagation(); if (!travel) onReopen() } }}><circle r="26" fill="#e9cc7a" opacity=".35" /><circle r="10" fill="#d6a550" stroke="#fffbed" strokeWidth="3" /><path d="M0 -19 V-29 M0 19 V29 M-19 0 H-29 M19 0 H29" stroke="#986d32" strokeWidth="2.5" strokeLinecap="round" /></g>}
       {mode !== 'explore' && <g className="map-center-target" transform={`translate(${viewport.width / 2} ${viewport.height / 2})`} aria-hidden="true"><circle r="12" /><path d="M-19 0 H-6 M6 0 H19 M0 -19 V-6 M0 6 V19" /></g>}
     </svg>
+    <div className="map-layers" role="group" aria-label="Climate layer"><span><Layers size={16} />Climate</span>{([null, 'summer', 'rain', 'frost'] as const).map(id => <button key={id ?? 'off'} aria-pressed={layer === id} disabled={Boolean(travel) || (id !== null && !climate)} onClick={() => onLayer(id)}>{id ? layerStyles[id].short : 'Off'}</button>)}</div>
+    {climate && layer && regionalView && <ClimateLegend layer={layer} climate={climate} />}
     <div className="map-zoom" role="group" aria-label="Map controls"><button aria-label="Zoom in map" title="Zoom in" onClick={() => zoom(1)} disabled={Boolean(travel) || camera.zoom >= 6}><Plus size={22} /></button><button aria-label="Zoom out map" title="Zoom out" onClick={() => zoom(-1)} disabled={Boolean(travel) || camera.zoom <= minimumZoom + 1e-9}><Minus size={22} /></button><button aria-label="Show whole Bay Area" title={map.region ? 'Whole Bay Area' : 'Loading Bay Area…'} disabled={!map.region || Boolean(travel)} onClick={() => setCamera(bayAreaCamera(map, viewport))}><Globe2 size={22} /></button><button aria-label="Show whole East Bay" title="Back to Oakland" disabled={Boolean(travel)} onClick={restoreOakland}><Scan size={21} /></button></div>
     <div className="map-play-hint" role="status">{travel ? <><Footprints size={18} />To {placeById[travel].shortName}…</> : mode === 'create' ? <><Sprout size={18} />Tap your garden spot</> : mode === 'check' ? <><MapPin size={18} />Tap a spot to check</> : <><Compass size={18} />{compact ? 'Tap & drag' : regionalView ? 'Tap a city or spot · drag to explore' : 'Tap a place or spot · drag to explore'}</>}</div>
     {mode !== 'explore' && <button className="pick-map-center" disabled={Boolean(travel)} onClick={() => onChoose([camera.x, camera.y])}><MapPin size={18} />Choose center</button>}
@@ -214,9 +252,10 @@ function EastBayMap({ map, state, location, travel, onVisit, mode, selected, pro
   </div>
 }
 
-export function World({ state, location, travel, onVisit, onJournal, onHow, selectedProjectId, onProjectChange, onNotice }: {
+export function World({ state, location, travel, onVisit, onJournal, onHow, selectedProjectId, onProjectChange, onNotice, initialFocus = null, initialMode = null, initialLayer = null }: {
   state: ExplorationState; location: PlaceId; travel: PlaceId | null; onVisit: (id: PlaceId) => void; onJournal: () => void; onHow: () => void
   selectedProjectId: string | null; onProjectChange: (id: string | null) => void; onNotice: (text: string, error?: boolean) => void
+  initialFocus?: Focus; initialMode?: 'create' | 'check' | null; initialLayer?: LayerId | null
 }) {
   const [localMap, setMap] = useState<NeighborhoodGeometry | null>(null)
   const [region, setRegion] = useState<BayAreaGeometry | null>(null)
@@ -227,8 +266,14 @@ export function World({ state, location, travel, onVisit, onJournal, onHow, sele
   const [error, setError] = useState(false)
   const [attempt, setAttempt] = useState(0)
   const client = useCommunity()
-  const [environment, setEnvironment] = useState<SiteEnvironment | null>(null)
-  const [mode, setMode] = useState<MapMode>('explore')
+  const [baseEnvironment, setEnvironment] = useState<SiteEnvironment | null>(null)
+  const [climate, setClimate] = useState<BayClimate | null>(null)
+  const environment = useMemo(() => baseEnvironment && climate ? { ...baseEnvironment, regional: climate } : baseEnvironment, [baseEnvironment, climate])
+  const [layer, setLayer] = useState<LayerId | null>(initialLayer)
+  const [passport, setPassport] = usePassport()
+  const [activeStop, setActiveStop] = useState<Resource | null>(null)
+  const [view, setView] = useState<{ center: { latitude: number; longitude: number } | null; west: number; east: number; north: number; south: number } | null>(null)
+  const [mode, setMode] = useState<MapMode>(initialMode ?? 'explore')
   const [communityDialog, setCommunityDialog] = useState<CommunityDialog>(selectedProjectId ? 'project' : null)
   const [site, setSite] = useState<SelectedSite | null>(null)
   const [conditions, setConditions] = useState<SiteConditions>(emptyConditions)
@@ -240,6 +285,7 @@ export function World({ state, location, travel, onVisit, onJournal, onHow, sele
   useEffect(() => {
     const controller = new AbortController()
     fetch('/data/site-environment.json', { signal: controller.signal }).then(response => { if (!response.ok) throw new Error('Site data unavailable'); return response.json() as Promise<SiteEnvironment> }).then(setEnvironment).catch(() => undefined)
+    fetch('/data/bay-area-climate.json', { signal: controller.signal }).then(response => { if (!response.ok) throw new Error('Climate data unavailable'); return response.json() as Promise<BayClimate> }).then(setClimate).catch(() => undefined)
     return () => controller.abort()
   }, [])
   useEffect(() => {
@@ -270,7 +316,11 @@ export function World({ state, location, travel, onVisit, onJournal, onHow, sele
     }).then(setRegion).catch(() => { if (!controller.signal.aborted) setRegionError(true) })
     return () => controller.abort()
   }, [regionAttempt])
-  const closeCommunity = () => { setCommunityDialog(null); onProjectChange(null) }
+  const closeCommunity = () => { setCommunityDialog(null); onProjectChange(null); setActiveStop(null) }
+  const openStop = (stop: Resource) => { onProjectChange(null); setActiveStop(stop); setCommunityDialog('stop') }
+  const stamps = Object.keys(passport.stamps).length
+  const inView = view ? bayStops.filter(stop => { const [lat, lon] = stop.coordinates!; return lat <= view.north && lat >= view.south && lon >= view.west && lon <= view.east }) : bayStops
+  const nearby = view?.center ? [...inView].sort((a, b) => Math.hypot(a.coordinates![0] - view.center!.latitude, a.coordinates![1] - view.center!.longitude) - Math.hypot(b.coordinates![0] - view.center!.latitude, b.coordinates![1] - view.center!.longitude)) : inView
   const openProject = (id: string) => { onProjectChange(id); setCommunityDialog('project') }
   const openBoard = () => { onProjectChange(null); setCommunityDialog('board') }
   const choose = (point: Point, place?: PlaceId) => {
@@ -291,22 +341,27 @@ export function World({ state, location, travel, onVisit, onJournal, onHow, sele
   const savedProject = (saved: GardenProject) => { setMode('explore'); setSite(null); setEditingProject(null); openProject(saved.id); onNotice(editingProject ? 'Garden plan updated.' : 'Your garden idea is on the map.') }
   const count = Object.keys(state.entries).length
   return <div className="exploration-world">
-    <section className="explore-hero"><div><h1>{regionalView ? <>Bay <em>Area.</em></> : <>East <em>Bay.</em></>}</h1><p>Explore a place. Plant an idea.</p></div><button className="journal-pill" onClick={onJournal}><BookOpen size={24} /><span><strong>My journal</strong><small>{count}/{hotspotOrder.length} discoveries</small></span><ArrowRight size={19} /></button></section>
+    <section className="explore-hero"><div><h1>{regionalView ? <>Bay <em>Area.</em></> : <>Oakland, <em>up close.</em></>}</h1><p>{regionalView ? `${bayStops.length + places.length} places across nine counties. Tap one to visit.` : 'Four playable places. Zoom out for the whole Bay Area.'}</p></div><div className="hero-pills"><button className="journal-pill passport-pill" onClick={() => { onProjectChange(null); setCommunityDialog('passport') }}><Stamp size={24} /><span><strong>Field stamps</strong><small>{stamps}/5 climate zones</small></span><ArrowRight size={19} /></button><button className="journal-pill" onClick={onJournal}><BookOpen size={24} /><span><strong>My journal</strong><small>{count}/{hotspotOrder.length} discoveries</small></span><ArrowRight size={19} /></button></div></section>
     <div className="world-toolbar" role="group" aria-label="Explore, check, and grow"><div className="world-modes"><button aria-pressed={mode === 'explore'} disabled={Boolean(travel)} onClick={() => pickMode('explore')}><Compass size={20} />Explore</button><button aria-pressed={mode === 'check'} disabled={Boolean(travel)} onClick={() => pickMode('check')}><MapPin size={20} />Check a spot</button><button aria-pressed={mode === 'create'} disabled={Boolean(travel)} onClick={() => pickMode('create')}><Sprout size={21} />Start a garden</button></div><button className="world-projects-button" aria-label="Garden projects" disabled={Boolean(travel)} onClick={openBoard}><Users size={21} />Projects <span>{client.loading ? '…' : client.error ? '?' : client.projects.length}</span></button></div>
     <section className="world-panel" aria-label={regionalView ? 'Explore the Bay Area' : 'Explore East Bay'}>
-      {map ? <EastBayMap map={map} state={state} location={location} travel={travel} onVisit={onVisit} mode={mode} selected={site} projects={client.projects} selectedProjectId={selectedProjectId} onChoose={choose} onReopen={() => setCommunityDialog('site')} onProject={openProject} onRegionalView={setRegionalView} /> : <div className="neighborhood-canvas view-loading" role="status">{error ? <><p>Map couldn’t load.</p><button className="button button-secondary" onClick={() => setAttempt(value => value + 1)}>Try again</button></> : 'Opening East Bay…'}</div>}
+      {map ? <EastBayMap map={map} state={state} location={location} travel={travel} onVisit={onVisit} mode={mode} selected={site} projects={client.projects} selectedProjectId={selectedProjectId} onChoose={choose} onReopen={() => setCommunityDialog('site')} onProject={openProject} onRegionalView={setRegionalView} climate={climate} layer={layer} onLayer={setLayer} stops={bayStops} visitedStops={passport.visited} onStop={openStop} focus={initialFocus} onViewChange={setView} /> : <div className="neighborhood-canvas view-loading" role="status">{error ? <><p>Map couldn’t load.</p><button className="button button-secondary" onClick={() => setAttempt(value => value + 1)}>Try again</button></> : 'Opening East Bay…'}</div>}
     </section>
     {regionError && <p className="regional-map-error" role="status">Bay Area overview couldn’t load. <button onClick={() => setRegionAttempt(value => value + 1)}>Retry overview</button></p>}
     <p className="world-community-note">{client.error ? <><span role="status">Garden projects couldn’t refresh.</span><button onClick={() => { void client.refresh() }}>Retry</button></> : <><Sprout size={17} />Projects shared locally · Pins are proposals</>}</p>
-    <nav className="destination-list" aria-label="Places to visit">{places.map(place => {
+    {regionalView ? <section className="stop-strip" aria-label="Places in view">
+      <div className="stop-strip-head"><h2>{inView.length ? <>In view <em>({inView.length})</em></> : 'Pan the map to find places'}</h2><span>Closest to the map’s center first</span></div>
+      <div className="stop-strip-row">{nearby.slice(0, 12).map(stop => <button key={stop.id} className={`stop-chip ${passport.visited.includes(stop.id) ? 'visited' : ''}`} disabled={Boolean(travel)} onClick={() => openStop(stop)}><StopArt kind={stop.kind} size={46} /><span><strong>{stop.name}</strong><small>{stop.city}{passport.visited.includes(stop.id) ? ' · visited' : ''}</small></span></button>)}</div>
+    </section> : <nav className="destination-list" aria-label="Places to visit">{places.map(place => {
       const found = place.hotspots.filter(id => state.entries[id]).length
       return <button key={place.id} className={`destination-card ${found === place.hotspots.length ? 'done' : ''}`} disabled={Boolean(travel)} onClick={() => onVisit(place.id)}>
         <span className="destination-card-art"><svg viewBox="-118 -120 236 170" aria-hidden="true">{place.id === 'farm' ? <FarmVignette small /> : place.id === 'park' ? <ParkVignette /> : place.id === 'gravity' ? <GardenVignette /> : <LibraryBuilding scale={1.3} />}</svg></span>
         <strong>{place.shortName}</strong><span className="destination-count">{found === place.hotspots.length ? <Check size={18} /> : `${found}/${place.hotspots.length}`}</span>
       </button>
-    })}</nav>
+    })}</nav>}
     <button className="map-how text-button" onClick={onHow}>How to play <ArrowRight size={17} /></button>
-    {communityDialog && <Modal title={communityDialog === 'site' ? 'Planting check' : communityDialog === 'board' ? 'Garden projects' : communityDialog === 'create' ? 'Start a garden' : communityDialog === 'edit' ? 'Edit garden project' : 'Garden project'} wide onClose={closeCommunity}>
+    {communityDialog && <Modal title={communityDialog === 'stop' ? activeStop?.name ?? 'Place' : communityDialog === 'passport' ? 'Field stamps' : communityDialog === 'site' ? 'Planting check' : communityDialog === 'board' ? 'Garden projects' : communityDialog === 'create' ? 'Start a garden' : communityDialog === 'edit' ? 'Edit garden project' : 'Garden project'} wide onClose={closeCommunity}>
+      {communityDialog === 'stop' && activeStop && <StopCard key={activeStop.id} stop={activeStop} climate={climate} passport={passport} onPassport={setPassport} onCheck={() => { const [latitude, longitude] = activeStop.coordinates!; if (!map) return; const picked = describeSite(map, { latitude, longitude }); picked.label = activeStop.name; setSite(picked); setConditions(emptyConditions()); setSelectedPlants([]); setNewKind('new-garden'); setCommunityDialog('site') }} />}
+      {communityDialog === 'passport' && <PassportDialog passport={passport} stops={bayStops} climate={climate} onOpen={openStop} />}
       {communityDialog === 'site' && site && <SiteCheck site={site} environment={environment} conditions={conditions} selected={selectedPlants} onConditions={setConditions} onSelected={setSelectedPlants} onStart={() => setCommunityDialog('create')} />}
       {communityDialog === 'create' && site && <ProjectForm site={site} conditions={conditions} selected={selectedPlants} kind={newKind} visitorName={client.visitorName} client={client} onSaved={savedProject} onBack={() => setCommunityDialog('site')} />}
       {communityDialog === 'edit' && editingProject && <ProjectForm key={editingProject.id} site={editingProject.site} conditions={editingProject.conditions} selected={editingProject.plants} existing={editingProject} visitorName={client.visitorName} client={client} onSaved={savedProject} onBack={() => setCommunityDialog('project')} />}

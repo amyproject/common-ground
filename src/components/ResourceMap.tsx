@@ -18,7 +18,7 @@ function LeafletMap({ resources, selectedId, onSelect }: { resources: Resource[]
   useEffect(() => { select.current = onSelect }, [onSelect])
   useEffect(() => {
     if (!container.current) return
-    const instance = L.map(container.current, { zoomControl: false, scrollWheelZoom: false, maxZoom: 17, minZoom: 9 }).setView([37.8205, -122.26], 12)
+    const instance = L.map(container.current, { zoomControl: false, scrollWheelZoom: false, maxZoom: 17, minZoom: 7 }).setView([37.8205, -122.26], 12)
     map.current = instance
     L.control.zoom({ position: 'topright' }).addTo(instance)
     const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -98,11 +98,11 @@ export function ResourceMap({
   const reset = () => { setSearch(''); setCity('All'); setCategory('All'); setChosen([]); setSelectedId(null) }
   const hasFilters = Boolean(search || city !== 'All' || category !== 'All' || chosen.length)
   return <>
-    <section className="hero map-hero"><div><div className="eyebrow"><Leaf size={14} />Rooted in the East Bay</div><h1>Find your people.<br /><em>Grow something together.</em></h1></div><div className="hero-copy"><p>Real places to learn, grow, and get involved.<br className="desktop-break" /> Carry your neighborhood discoveries into<br className="desktop-break" /> the community around you.</p><button className="text-button" onClick={onGame}>Back to the neighborhood <ArrowRight size={17} /></button></div></section>
-    <section className="directory" aria-label="East Bay resource directory">
+    <section className="hero map-hero"><div><div className="eyebrow"><Leaf size={14} />Rooted in the Bay Area</div><h1>Find your people.<br /><em>Grow something together.</em></h1></div><div className="hero-copy"><p>Real places to learn, grow, and get involved.<br className="desktop-break" /> Carry your neighborhood discoveries into<br className="desktop-break" /> the community around you.</p><button className="text-button" onClick={onGame}>Back to the map <ArrowRight size={17} /></button></div></section>
+    <section className="directory" aria-label="Bay Area resource directory">
       <div className="directory-controls">
         <label className="search-field"><Search size={19} /><input aria-label="Search resources" placeholder="Search a place, neighborhood, or idea…" value={search} onChange={(event) => setSearch(event.target.value)} />{search && <button className="icon-button" aria-label="Clear search" onClick={() => setSearch('')}><X size={16} /></button>}</label>
-        <label className="select-field"><MapPin size={16} /><select aria-label="Filter by city" value={city} onChange={(event) => setCity(event.target.value)}><option value="All">All locations</option><option>Oakland</option><option>Berkeley</option><option>Online</option></select></label>
+        <label className="select-field"><MapPin size={16} /><select aria-label="Filter by county" value={city} onChange={(event) => setCity(event.target.value)}><option value="All">All counties</option>{[...new Set(resources.map(resource => resource.county ?? resource.city))].sort((a, b) => a === 'Online' ? 1 : b === 'Online' ? -1 : a.localeCompare(b)).map(county => <option key={county}>{county}</option>)}</select></label>
         <div className="category-tabs" role="group" aria-label="Filter by resource type">{(['All', 'Garden', 'Learning', 'Tools & seeds'] as const).map((value) => <button key={value} className={category === value ? 'active' : ''} aria-pressed={category === value} onClick={() => setCategory(value)}>{value === 'All' ? 'All resources' : value === 'Garden' ? 'Gardens' : value}</button>)}</div>
       </div>
       <div className="practice-filters"><span><SlidersHorizontal size={14} />Related to</span>{practices.map((practice) => <button key={practice.id} className={`filter-chip ${chosen.includes(practice.id) ? 'active' : ''}`} aria-pressed={chosen.includes(practice.id)} onClick={() => setChosen((previous) => previous.includes(practice.id) ? previous.filter((id) => id !== practice.id) : [...previous, practice.id])}><PracticeIcon id={practice.id} size={14} />{practice.shortName}</button>)}{hasFilters && <button className="clear-filters" onClick={reset}>Clear filters <X size={13} /></button>}</div>

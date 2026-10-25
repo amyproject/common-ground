@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" data-hub-section="plan">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plan your plot · Common Ground</title>
+<meta name="description" content="Check your site's climate, lay out a companion-planted bed, and get a planting calendar timed to your frost dates. Free, no account.">
+<meta property="og:title" content="Plan your plot · Common Ground">
+<meta property="og:description" content="A free site check, bed planner and planting calendar for Bay Area growers (works anywhere).">
+<link rel="stylesheet" href="/hub/hub.css">
+<link rel="stylesheet" href="/plan/sprites.css">
+<link rel="stylesheet" href="/plan/plan.css">
+<script src="/hub/hub.js" defer></script>
+<script src="/plan/plan.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#check">Skip to the site check</a>
+<header class="hub-bar"></header>
+
+<div class="note-banner" id="sharedBanner" hidden></div>
+
+<main>
+<!-- ───────────── PAGE HEAD ───────────── -->
+<section class="page-head" id="top">
+  <div class="wrap head-grid">
+    <div>
+      <h1>Plan your <em>plot.</em></h1>
+      <p class="sub">Read your site, lay out a bed, and plant on time. Everything stays on this device; no account needed.</p>
+    </div>
+    <button type="button" class="sample" id="sampleBed" aria-label="Load the sample salsa bed into the planner">
+      <span class="sample-bed" id="heroBed"></span>
+      <span class="sample-note">
+        <svg class="scribble" width="64" height="38" viewBox="0 0 64 38" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M60 33C44 34 22 28 10 9"/><path d="M5 15 9 7.5l8.5 2"/></svg>
+        <span><span class="hand">tomato + basil</span> make good neighbours. <u>Try this bed</u></span>
+      </span>
+    </button>
+  </div>
+</section>
+
+<!-- ───────────── SUB NAV ───────────── -->
+<nav class="subnav" id="subnav" aria-label="Plan sections">
+  <div class="wrap subnav-inner">
+    <div class="tabs">
+      <a href="#check" data-step="check"><span class="dot">1</span>Site check</a>
+      <a href="#planner" data-step="planner"><span class="dot">2</span>Bed planner</a>
+      <a href="#calendar" data-step="calendar"><span class="dot">3</span>Calendar</a>
+      <a href="#community" data-step="community"><span class="dot">4</span>Community</a>
+    </div>
+    <a class="progress" href="#progress" id="progressPill" title="Your progress on this plot">
+      <span class="sprout-stage" id="stageIco"></span>
+      <span><b id="stageName">Seedling</b> <small id="stageCount">0 of 6</small></span>
+    </a>
+  </div>
+</nav>
+
+<!-- ───────────── SITE CHECK ───────────── -->
+<section id="check" class="block">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num" aria-hidden="true">1</span>
+      <div>
+        <h2>Read your <em>site.</em></h2>
+        <p class="lead">Permaculture starts with watching. We pull five years of local weather and combine it with what you know about the ground.</p>
+      </div>
+    </div>
+    <div class="check-grid">
+      <form class="panel" id="siteForm" autocomplete="off">
+        <div class="field loc-wrap">
+          <label for="loc">Where's the garden?</label>
+          <div class="loc-row">
+            <input type="text" id="loc" placeholder="e.g. Fruitvale, Oakland">
+            <button type="button" class="btn ghost icon-only" id="geoBtn" title="Use my location" aria-label="Use my location"><i data-ic="locate"></i></button>
+          </div>
+          <div class="suggest" id="locSuggest" hidden></div>
+        </div>
+        <div class="field"><span class="flabel" id="slopeL">Slope</span>
+          <select id="slope" class="vh" tabindex="-1" aria-hidden="true"><option value="flat">Flat</option><option value="gentle">Gentle</option><option value="steep">Steep</option></select>
+          <div class="segs" data-for="slope" role="group" aria-labelledby="slopeL"></div></div>
+        <div class="field"><span class="flabel" id="sunL">Sun on the bed</span>
+          <select id="sun" class="vh" tabindex="-1" aria-hidden="true"><option value="full">6h+</option><option value="part">4–6h</option><option value="shade">Under 4h</option></select>
+          <div class="segs" data-for="sun" role="group" aria-labelledby="sunL"></div></div>
+        <div class="field"><span class="flabel" id="soilL">Soil</span>
+          <select id="soil" class="vh" tabindex="-1" aria-hidden="true"><option value="loam">Loam</option><option value="clay">Clay</option><option value="sandy">Sandy</option><option value="unknown">Not sure</option></select>
+          <div class="segs" data-for="soil" role="group" aria-labelledby="soilL"></div></div>
+        <div class="field"><span class="flabel" id="waterL">Water</span>
+          <select id="water" class="vh" tabindex="-1" aria-hidden="true"><option value="rain">Rain only</option><option value="mains">Tap</option><option value="well">Well</option><option value="stream">Creek / pond</option></select>
+          <div class="segs" data-for="water" role="group" aria-labelledby="waterL"></div></div>
+        <div class="field range">
+          <div class="range-top"><label for="areaR">Growing area</label><span><input type="number" id="area" min="1" aria-label="Growing area"> <span class="u-area">m²</span></span></div>
+          <input type="range" id="areaR" min="0" max="1000" step="1">
+        </div>
+        <div class="field range">
+          <div class="range-top"><label for="roofR">Roof that drains to a barrel</label><span><input type="number" id="roof" min="0" aria-label="Roof area"> <span class="u-area">m²</span></span></div>
+          <input type="range" id="roofR" min="0" max="1000" step="1">
+        </div>
+        <button class="btn primary wide" type="submit">Check this site</button>
+        <p class="fine">Weather from the Open-Meteo archive. If it can't be reached, we estimate from latitude and say so.</p>
+      </form>
+
+      <div class="panel" id="results">
+        <div class="empty">
+          <svg width="150" height="110" viewBox="0 0 150 110" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 26 52 12l46 14 38-14v72l-38 14-46-14-38 14z" fill="#f1f2e6"/>
+            <path d="M52 12v72M98 26v72" stroke-dasharray="3 4"/>
+            <path d="M22 70c10-6 18 2 28-6s18-14 30-6 20 4 30-4 16-6 22-2" stroke="#86995d"/>
+            <path d="M24 44c8 2 12-4 20-2" stroke="#acd0cf" stroke-width="3"/>
+            <path d="M75 38s-9 9.5-9 16a9 9 0 0 0 18 0c0-6.5-9-16-9-16z" fill="#fffef8" stroke="#244d36"/>
+            <circle cx="75" cy="54" r="3" stroke="#244d36"/>
+          </svg>
+          <p>Pick a place to see its frost dates, rainfall,<br>a site score and what to build first.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── PLANNER ───────────── -->
+<section id="planner" class="block tinted">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num" aria-hidden="true">2</span>
+      <div>
+        <h2>Lay out a <em>bed.</em></h2>
+        <p class="lead">Pick a plant, then click or drag across the soil. Each square is one square foot. Hover first to see who it gets along with.</p>
+      </div>
+    </div>
+    <div class="planner">
+      <div class="panel palette-card">
+        <div class="panel-title"><h3>Plants</h3><span class="fine" id="plCount"></span></div>
+        <input type="text" id="plSearch" placeholder="Search: basil, peas…" aria-label="Search plants">
+        <div class="chips" id="plFilters"></div>
+        <div class="palette" id="palette"></div>
+      </div>
+
+      <div class="panel bed-card">
+        <div class="bed-tools">
+          <div class="size" title="Bed size in feet">
+            <span class="stepper"><button type="button" class="step-btn" data-dim="w" data-d="-1" aria-label="Narrower">−</button><input type="number" id="bedW" min="1" max="16" aria-label="Width in feet"><button type="button" class="step-btn" data-dim="w" data-d="1" aria-label="Wider">+</button></span>
+            <span class="times">×</span>
+            <span class="stepper"><button type="button" class="step-btn" data-dim="h" data-d="-1" aria-label="Shorter">−</button><input type="number" id="bedH" min="1" max="24" aria-label="Length in feet"><button type="button" class="step-btn" data-dim="h" data-d="1" aria-label="Longer">+</button></span>
+            <span class="fine">ft</span>
+          </div>
+          <select id="template" aria-label="Start from a layout"><option value="">Layouts…</option></select>
+          <span class="tool-gap"></span>
+          <button class="btn ghost sm" id="eraseBtn" type="button" aria-pressed="false"><i data-ic="eraser"></i>Eraser</button>
+          <button class="btn ghost sm icon-only" id="clearBtn" type="button" title="Clear the bed" aria-label="Clear the bed"><i data-ic="trash"></i></button>
+          <button class="btn ghost sm icon-only" id="printBtn" type="button" title="Print the plan" aria-label="Print the plan"><i data-ic="print"></i></button>
+        </div>
+        <div class="bed-stage">
+          <div class="bed-scroll"><div class="bed-wrap"><div id="bed" tabindex="0" role="grid" aria-label="Garden bed. Arrow keys move, Enter plants, Delete clears."></div><button type="button" class="resize" id="bedResize" aria-label="Drag to resize the bed"><i data-ic="grip"></i></button></div></div>
+          <div class="hover-tip" id="hoverTip" hidden></div>
+        </div>
+        <div class="legend">
+          <span><i class="lg good"></i>Next to a friend</span>
+          <span><i class="lg bad"></i>Next to a plant it dislikes</span>
+          <span><b class="lg-n">4</b> plants per square</span>
+          <span class="fine saved" id="savedNote"><i data-ic="check"></i>Saved on this device</span>
+        </div>
+      </div>
+
+      <div class="panel guild-card">
+        <div class="panel-title"><h3>Guild health</h3><span class="fine" id="guildLabel">Start planting</span></div>
+        <div class="guild-score"><strong id="guildScore">0</strong><span>/100</span></div>
+        <div class="meter"><i id="guildMeter" style="width:0"></i></div>
+        <ul class="roles" id="roles"></ul>
+        <div id="issues"></div>
+        <div class="tip" id="guildTip"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── CALENDAR ───────────── -->
+<section id="calendar" class="block">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num" aria-hidden="true">3</span>
+      <div>
+        <h2>Plant on <em>time.</em></h2>
+        <p class="lead" id="calLead">Built from the plants in your bed and your frost dates.</p>
+      </div>
+    </div>
+    <div class="cal-legend">
+      <span><i class="sw indoor"></i>Start indoors</span>
+      <span><i class="sw out"></i>Transplant out</span>
+      <span><i class="sw sow"></i>Sow in the ground</span>
+      <span><i class="sw fall"></i>Fall planting</span>
+      <span><i class="sw harvest"></i>Harvest</span>
+      <span><i class="sw bloom"></i>Flowering</span>
+      <span><i class="sw today-sw"></i>Today</span>
+      <span><i class="sw frost-sw"></i>Frost dates</span>
+    </div>
+    <div class="panel cal"><div class="cal-grid" id="calGrid"></div></div>
+    <div class="week">
+      <div class="panel">
+        <h3>Next two weeks</h3>
+        <ul class="tasks" id="tasks"></ul>
+      </div>
+      <div class="panel export">
+        <h3>Put it in your calendar</h3>
+        <p class="fine">Every sow, transplant and harvest window as an all-day event, with a reminder the day before. Works with Google, Apple and Outlook.</p>
+        <button class="btn primary" id="icsBtn" type="button"><i data-ic="calendar"></i>Download .ics</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── COMMUNITY ───────────── -->
+<section id="community" class="block tinted">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num" aria-hidden="true">4</span>
+      <div>
+        <h2>Grow it <em>together.</em></h2>
+        <p class="lead">Borrow a layout that works, take your plan to a shared plot, or find people already growing near you.</p>
+      </div>
+    </div>
+
+    <div id="communityLinks"></div>
+
+    <h3 class="sub-h">Borrow a layout</h3>
+    <div class="gallery" id="gallery"></div>
+
+    <div class="together">
+      <div class="panel" id="progress">
+        <div class="stage-head"><span class="stage-big" id="lvIco"></span>
+          <div><h3 id="lvName">Seedling</h3><p class="fine" id="lvNext">0 of 6 done</p></div></div>
+        <ul class="quests" id="quests"></ul>
+      </div>
+      <div class="panel">
+        <h3>Share your plan</h3>
+        <p class="fine">The link carries your site and bed, so a neighbour or garden coordinator can open it and adjust it. Nothing is uploaded.</p>
+        <div class="row-btns">
+          <button type="button" class="btn primary sm" id="sharePlan"><i data-ic="share"></i>Share link</button>
+          <button type="button" class="btn ghost sm" id="copyPlan"><i data-ic="link"></i>Copy link</button>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Frost-date finder for your site</h3>
+        <p class="fine">Running a garden or nursery page? Paste this small widget and visitors can look up their frost dates.</p>
+        <textarea class="code" id="embedCode" readonly aria-label="Embed code"></textarea>
+        <div class="row-btns"><button type="button" class="btn ghost sm" id="copyEmbed"><i data-ic="code"></i>Copy code</button><a class="text-link" id="previewEmbed" target="_blank" rel="noopener">Preview<i data-ic="arrow"></i></a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── FAQ ───────────── -->
+<section id="faq" class="block">
+  <div class="wrap">
+    <h2>Questions</h2>
+    <div class="faq">
+      <details><summary>Where does the climate data come from?</summary><p>The free Open-Meteo historical archive: daily weather for the last five years at your coordinates. Frost dates are the median last spring and first fall days at or below 0 °C (32 °F). The hardiness zone comes from the average coldest night of the year.</p></details>
+      <details><summary>Does it cost anything?</summary><p>No. Common Ground is a free community tool. There's no account and nothing to upgrade.</p></details>
+      <details><summary>Where is my plan stored?</summary><p>In this browser's local storage, on this device. Share links contain the plan itself, so nothing is uploaded unless you send the link to someone.</p></details>
+      <details><summary>What is a guild?</summary><p>Plants that help each other: one fixes nitrogen, another draws pollinators, another confuses pests or shades the soil. The classic is the Three Sisters: corn, beans and squash.</p></details>
+      <details><summary>The Bay is frost-free. Why do I see frost dates?</summary><p>Most of the flatlands rarely freeze, but the hills, Walnut Creek and parts of the South Bay do. If your site comes back frost-free, the calendar times plantings around the cool and warm seasons instead.</p></details>
+      <details><summary>Can I adjust my frost dates?</summary><p>Yes. After a site check, drag the frost-date sliders. The calendar redraws as you go, which helps if your yard is a cold pocket or sits against a warm wall.</p></details>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-inner">
+    <span><i data-ic="sprout"></i>Your plot is saved on this device</span>
+    <span>Climate data: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> (CC BY 4.0)</span>
+  </div>
+</footer>
+
+<div id="toasts" role="status" aria-live="polite"></div>
+
+<!-- embed-mode widget (shown only with ?embed=frost) -->
+<div id="embed" hidden>
+  <div class="panel">
+    <h3><i data-ic="snow"></i>Frost-date finder</h3>
+    <form id="embedForm" class="loc-row"><input type="text" id="embedLoc" placeholder="e.g. Fruitvale, Oakland" aria-label="Location"><button class="btn primary sm" type="submit">Look up</button></form>
+    <div id="embedOut" class="fine" style="margin-top:10px">Your last and first frost dates and hardiness zone.</div>
+    <p class="fine" style="margin:12px 0 0">Plan the whole garden free at <a id="embedCta" target="_blank" rel="noopener">Common Ground</a></p>
+  </div>
+</div>
+</body>
+</html>

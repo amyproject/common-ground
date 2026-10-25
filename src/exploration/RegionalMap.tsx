@@ -31,9 +31,10 @@ export const RegionalBase = memo(function RegionalBase({ map, scale }: { map: Ne
   </g>
 })
 
-export function RegionalLabels({ map, width, height, screenPoint, onCity, onOakland, compact, overview, picking }: {
+export function RegionalLabels({ map, width, height, screenPoint, onCity, onOakland, compact, overview, picking, avoid = [] }: {
   map: NeighborhoodGeometry; width: number; height: number; screenPoint: (point: Point) => Point
   onCity: (point: Point) => void; onOakland: () => void; compact: boolean; overview: boolean; picking: boolean
+  avoid?: { left: number; top: number; right: number; bottom: number }[]
 }) {
   const fontSize = compact ? 16 : 18
   const occupied: { left: number; top: number; right: number; bottom: number }[] = [
@@ -41,6 +42,9 @@ export function RegionalLabels({ map, width, height, screenPoint, onCity, onOakl
     ...(compact ? [{ left: 0, top: 0, right: width - 86, bottom: 65 }]
       : [{ left: width / 2 - 185, top: height - 98, right: width / 2 + 185, bottom: height }]),
     ...(picking ? [{ left: width - 175, top: height - 90, right: width, bottom: height }] : []),
+    // Climate-layer chips (top left) and legend (bottom left).
+    { left: 0, top: 0, right: 430, bottom: 64 }, { left: 0, top: height - 120, right: 300, bottom: height },
+    ...avoid,
   ]
   const cities = map.region?.cities ?? []
   const priority = (name: string) => { const index = overviewCities.indexOf(name); return index < 0 ? overviewCities.length : index }
@@ -52,7 +56,7 @@ export function RegionalLabels({ map, width, height, screenPoint, onCity, onOakl
     const [x, y] = screenPoint(point)
     if (x < 12 || x > width - 12 || y < 18 || y > height - 50) continue
     const oakland = city.name === 'Oakland'
-    const name = oakland ? 'Oakland · 4 places' : city.name
+    const name = oakland ? 'Oakland · 4 lessons' : city.name
     const labelWidth = name.length * fontSize * .55 + 24
     const positions = [[10, -18], [-labelWidth - 10, -18], [-labelWidth / 2, 14], [-labelWidth / 2, -52]]
     const chosen = positions.map(([dx, dy]) => ({ dx, dy, left: x + dx, top: y + dy, right: x + dx + labelWidth, bottom: y + dy + 37 }))

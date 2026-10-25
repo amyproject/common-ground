@@ -1,10 +1,11 @@
 import type { Resource } from '../types.ts'
+import bayAreaStops from './bay-area-stops.json' with { type: 'json' }
 
 const checkedAt = '2026-10-24'
 
 // Public places only. Coordinates are approximate wayfinding points, not site boundaries.
 // A source check is not a confirmation from the project steward.
-export const initialResources: Resource[] = [
+const eastBayResources: Resource[] = [
   {
     id: 'anv-west-oakland',
     name: 'West Oakland Farm Park',
@@ -273,4 +274,14 @@ export const initialResources: Resource[] = [
     checkedAt,
     status: 'source-checked',
   },
+]
+
+// Places across the nine Bay Area counties, source-checked on their providers' websites
+// (scripts/data/bay-area-stops.json keeps the evidence snippets).
+const regionalResources: Resource[] = (bayAreaStops as (Resource & { evidence?: string; coordinatesSource?: string })[])
+  .map(({ evidence: _evidence, coordinatesSource: _coordinatesSource, ...resource }) => ({ ...resource, address: resource.address ?? undefined, status: 'source-checked' as const }))
+
+export const initialResources: Resource[] = [
+  ...eastBayResources.map(resource => ({ ...resource, county: resource.city === 'Online' ? 'Online' : 'Alameda' })),
+  ...regionalResources,
 ]

@@ -1,4 +1,4 @@
-node_modules/
+node_modules
 dist/
 .DS_Store
 *.log
@@ -26,3 +26,5 @@ scripts/data/natural-earth/
 
 # Captured third-party reference pages
 /artifacts/*.html
+scripts/data/bay-climate-*.json
+scripts/data/bay-rain-*.json

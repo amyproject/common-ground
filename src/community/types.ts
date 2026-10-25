@@ -1,3 +1,4 @@
+import type { BayClimate } from '../hub/climate.ts'
 export type PlantId = 'tomato' | 'lettuce' | 'kale' | 'poppy' | 'fuchsia' | 'buckwheat'
 export type Season = 'spring' | 'summer' | 'fall' | 'winter'
 export type SiteFeature = 'water' | 'building' | 'road' | 'green' | 'unmapped'
@@ -33,6 +34,8 @@ export interface ClimateMonth {
 export interface SiteEnvironment {
   version: 1
   checkedAt: string
+  // Bay Area reference climates, merged in by the client when loaded (outside the Oakland pilot).
+  regional?: BayClimate
   climate: {
     source: string
     url: string

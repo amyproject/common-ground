@@ -26,6 +26,11 @@ const initialResourceId = params.get('resource')
 const initialPlace: PlaceId | null = Object.hasOwn(placeById, params.get('place') ?? '') ? params.get('place') as PlaceId : null
 const initialHotspot = params.get('discovery') as HotspotId | null
 const initialProjectId = /^[a-f0-9-]{36}$/.test(params.get('project') ?? '') ? params.get('project') : null
+// Hub deep links: /learn?focus=lat,lon centers the map, mode=create|check opens a tool, layer=summer|rain|frost shows climate.
+const focusMatch = (params.get('focus') ?? '').match(/^(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)$/)
+const initialFocus = focusMatch ? { latitude: Number(focusMatch[1]), longitude: Number(focusMatch[2]) } : null
+const initialMode = params.get('mode') === 'create' ? 'create' as const : params.get('mode') === 'check' ? 'check' as const : null
+const initialLayer = (['summer', 'rain', 'frost'] as const).find(layer => layer === params.get('layer')) ?? null
 
 export default function App() {
   const [directory, setDirectory] = useState(readState)
@@ -72,7 +77,7 @@ export default function App() {
     if (view !== 'game') search.set('view', view)
     else if (place) { search.set('place', place); if (active) search.set('discovery', active) }
     else if (selectedProjectId) search.set('project', selectedProjectId)
-    window.history.replaceState(null, '', search.size ? `/?${search}` : '/')
+    window.history.replaceState(null, '', search.size ? `/learn?${search}` : '/learn')
   }, [view, place, active, selectedProjectId])
 
   const visit = (next: PlaceId, discovery?: HotspotId) => {
@@ -96,7 +101,7 @@ export default function App() {
     notify(`${progress.entries[id] ? 'Field note updated' : 'Discovery collected'}: ${hotspots[id].name}.`)
   }
   const download = () => {
-    downloadText(createFieldJournal(progress), 'common-ground-oakland-field-journal.md')
+    downloadText(createFieldJournal(progress), 'common-ground-field-journal.md')
     notify('Journal downloaded.')
   }
   const restart = () => {
@@ -127,15 +132,17 @@ export default function App() {
   const pending = directory.suggestions.filter(suggestion => suggestion.status === 'pending').length
 
   return <div className={`app-shell exploration-app ${progress.reducedMotion ? 'reduced-motion' : ''}`}>
-    <a className="skip-link" href="#main-content">Skip to the game</a>
-    <header className="site-header"><div className="header-inner">
-      <button className="brand" onClick={neighborhood} aria-label="Common Ground home"><span className="brand-mark"><Sprout size={28} strokeWidth={1.5} /></span><span><strong>common ground<span className="brand-dot">.</span></strong></span></button>
-      <nav className="main-nav" aria-label="Main navigation"><button className={view === 'game' ? 'active' : ''} aria-current={view === 'game' ? 'page' : undefined} onClick={neighborhood}><Compass size={19} />East Bay</button><button onClick={() => setDialog({ type: 'journal' })}><BookOpen size={19} />Journal<span className="nav-journal-count">{Object.keys(progress.entries).length}</span></button><button className={view === 'map' ? 'active' : ''} aria-current={view === 'map' ? 'page' : undefined} onClick={() => navigate('map')}>Places <ArrowRight size={17} /></button></nav>
-    </div></header>
+    <a className="skip-link" href="#main-content">Skip to the map</a>
+    <nav className="explore-subnav" aria-label="Explore"><div className="explore-subnav-inner">
+      <button className={view === 'game' ? 'active' : ''} aria-current={view === 'game' ? 'page' : undefined} onClick={neighborhood}><Compass size={18} />Map</button>
+      <button onClick={() => setDialog({ type: 'journal' })}><BookOpen size={18} />Journal<span className="nav-journal-count">{Object.keys(progress.entries).length}</span></button>
+      <button className={view === 'map' ? 'active' : ''} aria-current={view === 'map' ? 'page' : undefined} onClick={() => navigate('map')}><Sprout size={18} />Places directory</button>
+      <a className="explore-subnav-plan" href="/plan/">Plan a plot <ArrowRight size={16} /></a>
+    </div></nav>
     {(!storage.directory || !storage.progress) && <div className="storage-notice" role="status">Browser storage is unavailable. You can still explore and download your journal; changes last for this visit.</div>}
     <main id="main-content" className={`main-content view-${view}`}>
-      {view === 'game' && (place ? <PlaceView key={place} placeId={place} active={active} state={progress} onHotspot={setActive} onBack={neighborhood} onUpdate={updateProgress} onComplete={complete} onAbout={() => setDialog({ type: 'resource', resourceId: placeById[place].resourceId })} onDownload={download} /> : <World state={progress} location={location} travel={travel?.to ?? null} onVisit={visit} onJournal={() => setDialog({ type: 'journal' })} onHow={() => setDialog({ type: 'how' })} selectedProjectId={selectedProjectId} onProjectChange={setSelectedProjectId} onNotice={notify} />)}
-      <Suspense fallback={<p className="view-loading" role="status">Opening the East Bay directory…</p>}>
+      {view === 'game' && (place ? <PlaceView key={place} placeId={place} active={active} state={progress} onHotspot={setActive} onBack={neighborhood} onUpdate={updateProgress} onComplete={complete} onAbout={() => setDialog({ type: 'resource', resourceId: placeById[place].resourceId })} onDownload={download} /> : <World state={progress} location={location} travel={travel?.to ?? null} onVisit={visit} onJournal={() => setDialog({ type: 'journal' })} onHow={() => setDialog({ type: 'how' })} selectedProjectId={selectedProjectId} onProjectChange={setSelectedProjectId} onNotice={notify} initialFocus={initialFocus} initialMode={initialMode} initialLayer={initialLayer} />)}
+      <Suspense fallback={<p className="view-loading" role="status">Opening the Bay Area directory…</p>}>
         {view === 'map' && <ResourceMap key={mapVersion} resources={directory.resources} initialPractices={mapPractices} initialResourceId={initialResourceId} onOpen={openResource} onReview={() => navigate('review')} onGame={neighborhood} />}
         {view === 'review' && <ReviewDesk resources={directory.resources} suggestions={directory.suggestions} onReview={review} onExample={() => { const suggestion = exampleSuggestion(directory.resources[0]); suggestion.id = `demo-${crypto.randomUUID()}`; suggestion.submittedAt = new Date().toISOString(); submitSuggestion(suggestion) }} onReset={() => { setDirectory(current => ({ ...current, resources: initialResources.map(item => ({ ...item })), suggestions: [] })); notify('The directory demo has been restored.') }} onMap={() => navigate('map')} onOpen={openResource} />}
       </Suspense>

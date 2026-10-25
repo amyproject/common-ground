@@ -59,7 +59,10 @@ export type ResourceCategory = 'Garden' | 'Learning' | 'Tools & seeds'
 export interface Resource {
   id: string
   name: string
-  city: 'Oakland' | 'Berkeley' | 'Online'
+  city: string
+  county?: string
+  // Which illustration the regional map uses for this place.
+  kind?: 'farm' | 'garden' | 'nursery' | 'learning' | 'park'
   neighborhood: string
   category: ResourceCategory
   description: string

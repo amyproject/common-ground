@@ -4,9 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#174e3c" />
-    <meta name="description" content="Explore East Bay. Visit real places and discover soil, water, trees, and community through play." />
-    <title>Common Ground — Explore East Bay</title>
+    <meta name="description" content="A Bay Area permaculture hub: explore real growing places, plan your plot, and organize volunteers." />
+    <title>Common Ground — Bay Area permaculture hub</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/hub/hub.css" />
+    <script>
+      // The shared hub bar (hub.js) reads this to mark the current section.
+      document.documentElement.dataset.hubSection = location.pathname.startsWith('/learn') ? 'explore' : location.pathname === '/' ? 'home' : 'account'
+    </script>
+    <script src="/hub/hub.js" defer></script>
   </head>
   <body>
     <div id="root"></div>

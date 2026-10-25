@@ -1,0 +1,5 @@
+{
+  "type": "commonjs",
+  "private": true,
+  "description": "Canopy engine scripts are classic browser scripts that Node loads with require (server/canopy/server.mjs, tests/canopy)."
+}

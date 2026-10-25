@@ -1,0 +1,619 @@
+[
+ {
+  "id": "garden-for-the-environment",
+  "name": "Garden for the Environment",
+  "city": "San Francisco",
+  "county": "San Francisco",
+  "neighborhood": "Inner Sunset",
+  "category": "Learning",
+  "kind": "garden",
+  "description": "A public teaching garden with compost, food, and native-plant demonstration areas plus hands-on gardening workshops.",
+  "access": "Sign up for an open volunteer shift or a workshop, or walk the self-guided garden tour. Confirm current schedule and age requirements with the team.",
+  "address": "1590 7th Avenue, San Francisco, CA 94122",
+  "coordinates": [
+   37.7587982,
+   -122.4636962
+  ],
+  "coordinatesSource": "nominatim",
+  "practices": [
+   "food",
+   "native"
+  ],
+  "action": "Explore volunteering",
+  "url": "https://www.gardenfortheenvironment.org/volunteer",
+  "sourceUrl": "https://www.gardenfortheenvironment.org/",
+  "sourcePublisher": "Garden for the Environment (Earth Island Institute)",
+  "evidence": "We are a public teaching garden in San Francisco offering collaborative, hands-on, skilled, and hopeful programming",
+  "checkedAt": "2026-10-25"
+ },
+ {
+  "id": "lej-candlestick-native-plant-nursery",
+  "name": "Candlestick Point Native Plant Nursery (Literacy for Environmental Justice)",
+  "city": "San Francisco",
+  "county": "San Francisco",
+  "neighborhood": "Bayview / Candlestick Point",
+  "category": "Garden",
+  "kind": "nursery",
+  "description": "A youth-staffed nursery that grows local native plants for habitat restoration in San Francisco parks and open spaces.",
+  "access": "Come to a standing nursery volunteer day or arrange a group workday through LEJ; some restoration events have a minimum age. Confirm current schedule and age requirements with the team.",
+  "address": "1150 Carroll Avenue, San Francisco, CA 94124",
+  "coordinates": [
+   37.7205034,
+   -122.3848786
+  ],
+  "coordinatesSource": "nominatim",
+  "practices": [
+   "native"
+  ],
+  "action": "Explore volunteering",
+  "url": "https://www.lejyouth.org/index.php/native-plant-nursery/",
+  "sourceUrl": "https://www.lejyouth.org/index.php/native-plant-nursery/",
+  "sourcePublisher": "Literacy for Environmental Justice",
+  "evidence": "The nursery employs local teens and engages the community in the process of growing plants, restoring local habitats",
+  "checkedAt": "2026-10-25"
+ },
+ {
+  "id": "quesada-gardens",
+  "name": "Quesada Gardens",
+  "city": "San Francisco",
+  "county": "San Francisco",
+  "neighborhood": "Bayview",
+  "category": "Garden",
+  "kind": "garden",
+  "description": "Neighbors turned a neglected street median into a vegetable and flower garden that volunteers still tend together.",
+  "access": "Email the volunteer coordinator listed on the site to join neighbors caring for the median garden. Confirm current schedule and age requirements with the team.",
+  "address": null,
+  "coordinates": [
+   37.734469,
+   -122.393167
+  ],
+  "coordinatesSource": "approximate",
+  "practices": [
+   "food"
+  ],
+  "action": "Contact to volunteer",
+  "url": "https://quesadagardens.org/volunteer%2Fdonate",
+  "sourceUrl": "https://quesadagardens.org/",
+  "sourcePublisher": "Quesada Gardens Initiative",
+  "evidence": "the entire length of the median was transformed from weeds, garbage, and neglect into a bountiful vegetable and flower garden.",
+  "checkedAt": "2026-10-25"
+ },
+ {
+  "id": "ecology-center-berkeley",
+  "name": "Ecology Center",
+  "city": "Berkeley",
+  "county": "Alameda",
+  "neighborhood": "West Berkeley",
+  "category": "Learning",
+  "kind": "learning",
+  "description": "A Berkeley nonprofit with a resource center, library, and classes on healthy food systems, zero waste, and climate action.",
+  "access": "Visit the store and environmental resource center during open hours, or apply to volunteer with the farmers' market or other programs. Confirm current schedule and age requirements with the team.",
+  "address": "2530 San Pablo Ave, Berkeley, CA",
+  "coordinates": [
+   37.8600017,
+   -122.289639
+  ],
+  "coordinatesSource": "nominatim",
+  "practices": [
+   "food"
+  ],
+  "action": "Explore volunteering",
+  "url": "https://ecologycenter.org/get-involved/volunteer/",
+  "sourceUrl": "https://ecologycenter.org/",
+  "sourcePublisher": "Ecology Center",
+  "evidence": "We provide information, educational opportunities, tools, and products to assist and develop your sustainable lifestyle.",
+  "checkedAt": "2026-10-25"
+ },
+ {
+  "id": "ardenwood-historic-farm",
+  "name": "Ardenwood Historic Farm",
+  "city": "Fremont",
+  "county": "Alameda",
+  "neighborhood": "Ardenwood",
+  "category": "Learning",
+  "kind": "farm",
+  "description": "A working regional-park farm where families help plant, tend, and harvest organic crops and learn farm history.",
+  "access": "Visit during park hours (entry fee) and join public naturalist programs, or ask about volunteering as a farm demonstrator. Confirm current schedule and age requirements with the team.",
+  "address": "34600 Ardenwood Blvd, Fremont, CA 94555",
+  "coordinates": [
+   37.5533645,
+   -122.0546405
+  ],
+  "coordinatesSource": "nominatim",
+  "practices": [
+   "food"
+  ],
+  "action": "Plan a visit",
+  "url": "https://www.ebparks.org/parks/ardenwood",
+  "sourceUrl": "https://www.ebparks.org/parks/ardenwood",
+  "sourcePublisher": "East Bay Regional Park District",
+  "evidence": "Public non-reservation weekend programs include the planting, tending, and harvesting of Ardenwood's organic crops",
+  "checkedAt": "2026-10-25"
+ },
+ {
+  "id": "alameda-point-collaborative-farm",
+  "name": "Alameda Point Collaborative Farm2Market",
+  "city": "Alameda",
+  "county": "Alameda",
+  "neighborhood": "Alameda Point",
+  "category": "Garden",
+  "kind": "farm",
+  "description": "An urban farm and plant nursery inside a supportive-housing community, where volunteers weed, plant, and propagate.",
+  "access": "Fill out the volunteer form to help as an urban farmer or nursery volunteer; group projects ask for a donation. Confirm current schedule and age requirements with the team.",
+  "address": "2600 Barbers Point Road, Alameda, CA 94501",
+  "coordinates": [
+   37.7853136,
+   -122.2931049
+  ],
+  "coordinatesSource": "approximate",
+  "practices": [
+   "food"
+  ],
+  "action": "Explore volunteering",
+  "url": "https://apcollaborative.org/volunteer/",
+  "sourceUrl": "https://apcollaborative.org/volunteer/",
+  "sourcePublisher": "Alameda Point Collaborative",
+  "evidence": "Volunteer as an Urban Farmer to help contribute to the successful operations of our farm and the APC community.",
+  "checkedAt": "2026-10-25"
+ },
+ {
+  "id": "urban-tilth-unity-park",
+  "name": "Unity Park Edible Forest (Urban Tilth)",
+  "city": "Richmond",
+  "county": "Contra Costa",
+  "neighborhood": "Richmond Greenway",
+  "category": "Garden",
+  "kind": "garden",
+  "description": "An edible forest of 80+ fruit trees and free-harvest garden beds along the Richmond Greenway, cared for by Urban Tilth.",
+  "access": "Pick fruit and join volunteer days or garden workshops on the Greenway; contact Urban Tilth to plan a group project. Confirm current schedule and age requirements with the team.",
+  "address": "1605 Ohio Avenue, Richmond, CA",
+  "coordinates": [
+   37.930852,
+   -122.3538365
+  ],
+  "coordinatesSource": "nominatim",
+  "practices": [
+   "food",
+   "trees"
+  ],
+  "action": "Explore volunteering",
+  "url": "https://urbantilth.org/get-involved/",
+  "sourceUrl": "https://urbantilth.org/grow/greenway-gardens/",
+  "sourcePublisher": "Urban Tilth",
+  "evidence": "Explore our incredible Edible Forest, a thriving multi-layered ecosystem boasting over 80 fruit trees, including cherries, apples, pears, and more.",
+  "checkedAt": "2026-10-25"
+ },
+ {
+  "id": "gardens-at-heather-farm",
+  "name": "The Gardens at Heather Farm",
+  "city": "Walnut Creek",
+  "county": "Contra Costa",
+  "neighborhood": "Ygnacio Valley",
+  "category": "Garden",
+  "kind": "garden",
+  "description": "A free six-acre public garden with demonstration and children's gardens, plant propagation, and youth nature classes.",
+  "access": "Walk the garden for free, or apply to join weekday garden-maintenance or plant-propagation volunteer crews. Confirm current schedule and age requirements with the team.",
+  "address": "1540 Marchbanks Drive, Walnut Creek, CA 94598",
+  "coordinates": [
+   37.9185343,
+   -122.0445866
+  ],
+  "coordinatesSource": "nominatim",
+  "practices": [
+   "native"
+  ],
+  "action": "Explore volunteering",
+  "url": "https://gardenshf.org/support-us/volunteer/",
+  "sourceUrl": "https://gardenshf.org/",
+  "sourcePublisher": "The Gardens at Heather Farm",
+  "evidence": "Kids can learn about wildlife habitats, geology, plant anatomy, water conservation, environmental stewardship, and more.",
+  "checkedAt": "2026-10-25"
+ },
+ {
+  "id": "markham-nature-park-arboretum",
+  "name": "Markham Nature Park and Arboretum",
+  "city": "Concord",
+  "county": "Contra Costa",
+  "neighborhood": "Central Concord",
+  "category": "Garden",
+  "kind": "park",
+  "description": "A 17-acre volunteer-run nature park with an arboretum, tree walks, and a community garden growing food and pollinator plants.",
+  "access": "Explore the park and tree walk, or contact the society about volunteer garden work; training is provided. Confirm current schedule and age requirements with the team.",
+  "address": "1202 La Vista Ave, Concord, CA 94521",
+  "coordinates": [
+   37.9634522,
+   -122.0043333
+  ],
+  "coordinatesSource": "nominatim",
+  "practices": [
+   "food",
+   "trees"
+  ],
+  "action": "Explore volunteering",
+  "url": "https://markhamarboretum.org/newmarkham/support/volunteer-opportunities/",
+  "sourceUrl": "https://markhamarboretum.org/newmarkham/visit/",
+  "sourcePublisher": "Markham Regional Arboretum Society",
+  "evidence": "an active Community Garden growing edible plants and pollinators year 'round.",
+  "checkedAt": "2026-10-25"
+ },
+ {
+  "id": "slide-ranch",
+  "name": "Slide Ranch",
+  "city": "Muir Beach",
+  "county": "Marin",
+  "neighborhood": "Marin coast",
+  "category": "Learning",
+  "kind": "farm",
+  "description": "A coastal teaching ranch where kids milk goats, collect eggs, and cook food from the garden.",
+  "access": "Register for a monthly volunteer day or a family farm program; youth under 14 come with a participating adult. Confirm current schedule and age requirements with the team.",
+  "address": "2025 Shoreline Highway, Muir Beach, CA",
+  "coordinates": [
+   37.8628195,
+   -122.5773451
+  ],
+  "coordinatesSource": "nominatim",
+  "practices": [
+   "food",
+   "native"
+  ],
+  "action": "Explore volunteering",
+  "url": "https://www.slideranch.org/volunteer",
+  "sourceUrl": "https://www.slideranch.org/",
+  "sourcePublisher": "Slide Ranch",
+  "evidence": "They milk goats, collect eggs, and cook farm-fresh food from the garden.",
+  "checkedAt": "2026-10-25"
+ },
+ {
+  "id": "occidental-arts-ecology-center",
+  "name": "Occidental Arts & Ecology Center",
+  "city": "Occidental",
+  "county": "Sonoma",
+  "neighborhood": "West Sonoma County",
+  "category": "Learning",
+  "kind": "learning",
+  "description": "An 80-acre permaculture demonstration site with organic gardens, orchards, and an organic perennial plant nursery.",
+  "access": "Drop in for a seasonal guided tour or a weekly garden volunteer day (volunteers must be 16+), or shop the nursery. Confirm current schedule and age requirements with the team.",
+  "address": "15290 Coleman Valley Road, Occidental, CA 95465",
+  "coordinates": [
+   38.4113567,
+   -122.9567407
+  ],
+  "coordinatesSource": "nominatim",
+  "practices": [
+   "food",
+   "native",
+   "trees"
+  ],
+  "action": "Explore volunteering",
+  "url": "https://oaec.org/events/volunteer-days/",
+  "sourceUrl": "https://oaec.org/events/tours/",
+  "sourcePublisher": "Occidental Arts & Ecology Center",
+  "evidence": "Our Saturday tours showcase our organic gardens and orchards, ecological design demonstration site, and programs.",
+  "checkedAt": "2026-10-25"
+ },
+ {
+  "id": "daily-acts-cavanagh-food-forest",
+  "name": "Cavanagh Center Food Forest (Daily Acts)",
+  "city": "Petaluma",
+  "county": "Sonoma",
+  "neighborhood": "Central Petaluma",
+  "category": "Garden",
+  "kind": "garden",
+  "description": "One of Daily Acts' public demonstration gardens, showing food forests, water-wise natives, and rain-capture ideas.",
+  "access": "Stroll the garden anytime it is open, or sign up for a Garden Steward workday or planting day on the Daily Acts site. Confirm current schedule and age requirements with the team.",
+  "address": "426 8th St, Petaluma, CA",
+  "coordinates": [
+   38.2258272,
+   -122.6366129
+  ],
+  "coordinatesSource": "nominatim",
+  "practices": [
+   "food",
+   "native",
+   "rain",
+   "trees"
+  ],
+  "action": "Explore volunteering",
+  "url": "https://dailyacts.org/volunteer/",
+  "sourceUrl": "https://dailyacts.org/demonstration-gardens/",
+  "sourcePublisher": "Daily Acts",
+  "evidence": "planting a food forest, installing and maintaining drip irrigation systems, pruning woody perennials and fruit or native trees, building rain gardens",
+  "checkedAt": "2026-10-25"
+ },
+ {
+  "id": "sonoma-garden-park",
+  "name": "Sonoma Garden Park (Sonoma Ecology Center)",
+  "city": "Sonoma",
+  "county": "Sonoma",
+  "neighborhood": "Sonoma Valley",
+  "category": "Garden",
+  "kind": "garden",
+  "description": "A 6.1-acre public garden with sustainable food gardens, chickens, a harvest market, and a native plant nursery.",
+  "access": "Drop in during posted volunteer hours to help in the gardens or native nursery, or visit the park and nursery. Confirm current schedule and age requirements with the team.",
+  "address": "19996 7th St E, Sonoma, CA",
+  "coordinates": [
+   38.2814939,
+   -122.4408748
+  ],
+  "coordinatesSource": "nominatim",
+  "practices": [
+   "food",
+   "native"
+  ],
+  "action": "Explore volunteering",
+  "url": "https://sonomaecologycenter.org/volunteer",
+  "sourceUrl": "https://sonomaecologycenter.org/sonomagardenpark",
+  "sourcePublisher": "Sonoma Ecology Center",
+  "evidence": "Sonoma Garden Park is a 6.1 acre public garden located at 19996 7th St E in Sonoma and is open daily from sunrise to sunset.",
+  "checkedAt": "2026-10-25"
+ },
+ {
+  "id": "connolly-ranch",
+  "name": "Connolly Ranch Education Center",
+  "city": "Napa",
+  "county": "Napa",
+  "neighborhood": "Browns Valley",
+  "category": "Learning",
+  "kind": "farm",
+  "description": "A historic farm where kids learn in an edible garden, care for heritage animals, and explore oak woodland trails.",
+  "access": "Register for a family program or Sunday Farm Open House, or apply as a garden or animal-care volunteer. Confirm current schedule and age requirements with the team.",
+  "address": "3141 Browns Valley Road, Napa, CA 94558",
+  "coordinates": [
+   38.303659,
+   -122.3219846
+  ],
+  "coordinatesSource": "nominatim",
+  "practices": [
+   "food",
+   "trees",
+   "native"
+  ],
+  "action": "Explore volunteering",
+  "url": "https://www.connollyranch.org/donate/volunteer",
+  "sourceUrl": "https://www.connollyranch.org/about-connolly-ranch",
+  "sourcePublisher": "Connolly Ranch Education Center",
+  "evidence": "We care for numerous fruit trees, perennials and California native flora to foster a pollinator friendly environment.",
+  "checkedAt": "2026-10-25"
+ },
+ {
+  "id": "rush-ranch",
+  "name": "Rush Ranch",
+  "city": "Suisun City",
+  "county": "Solano",
+  "neighborhood": "Suisun Marsh",
+  "category": "Learning",
+  "kind": "park",
+  "description": "A protected ranch and tidal-marsh reserve with native grasslands, trails, and hands-on ranching-history demonstrations.",
+  "access": "Hike the trails, come to a Get the Rush family day, or join Solano Land Trust's monthly volunteer workday. Confirm current schedule and age requirements with the team.",
+  "address": "3521 Grizzly Island Road, Suisun City, CA 94585",
+  "coordinates": [
+   38.2056014,
+   -122.0222281
+  ],
+  "coordinatesSource": "approximate",
+  "practices": [
+   "native"
+  ],
+  "action": "Explore volunteering",
+  "url": "https://solanolandtrust.org/get-involved/volunteer-docent.html",
+  "sourceUrl": "https://solanolandtrust.org/protected-lands/rush-ranch/rush-ranch.html",
+  "sourcePublisher": "Solano Land Trust",
+  "evidence": "Designated as a National Estuarine Research Reserve, Rush Ranch supports critical research on marsh ecosystems, serves as a hub for community education",
+  "checkedAt": "2026-10-25"
+ },
+ {
+  "id": "avant-community-garden-benicia",
+  "name": "Avant Garden (Benicia Community Gardens, Sustainable Solano)",
+  "city": "Benicia",
+  "county": "Solano",
+  "neighborhood": "Downtown Benicia",
+  "category": "Garden",
+  "kind": "garden",
+  "description": "An organic community garden with an outdoor education area and a share plot where volunteers grow food to donate.",
+  "access": "Join a monthly community garden or share-plot workday, or fill out Sustainable Solano's volunteer form. Confirm current schedule and age requirements with the team.",
+  "address": "400 First St, Benicia, CA",
+  "coordinates": [
+   38.047427,
+   -122.160179
+  ],
+  "coordinatesSource": "nominatim",
+  "practices": [
+   "food"
+  ],
+  "action": "Explore volunteering",
+  "url": "https://sustainablesolano.org/volunteer/",
+  "sourceUrl": "https://sustainablesolano.org/benicia-community-gardens/community-gardens/",
+  "sourcePublisher": "Sustainable Solano",
+  "evidence": "there are 43 garden beds, a shed, an outdoor education area, a picnic area, and our beloved \" Benicia Community Share \" plot",
+  "checkedAt": "2026-10-25"
+ },
+ {
+  "id": "pie-ranch",
+  "name": "Pie Ranch",
+  "city": "Pescadero",
+  "county": "San Mateo",
+  "neighborhood": "San Mateo coast",
+  "category": "Garden",
+  "kind": "farm",
+  "description": "A coastal farm focused on food education and regenerative agriculture, with a native garden and monthly community workdays.",
+  "access": "Pre-register for a weekly or monthly farm volunteer shift or a restoration day at a neighboring ranch. Confirm current schedule and age requirements with the team.",
+  "address": "2080 Cabrillo Hwy, Pescadero, CA",
+  "coordinates": [
+   37.1323004,
+   -122.3133123
+  ],
+  "coordinatesSource": "nominatim",
+  "practices": [
+   "food",
+   "native"
+  ],
+  "action": "Explore volunteering",
+  "url": "https://www.pieranch.org/volunteering",
+  "sourceUrl": "https://www.pieranch.org/work-day-meadow-dance",
+  "sourcePublisher": "Pie Ranch",
+  "evidence": "Every 3rd Saturday, the workday begins at 3 pm in the Native Garden behind Pie Ranch's Roadside Barn, located at 2080 Cabrillo Hwy, Pescadero.",
+  "checkedAt": "2026-10-25"
+ },
+ {
+  "id": "filoli",
+  "name": "Filoli Historic House & Garden",
+  "city": "Woodside",
+  "county": "San Mateo",
+  "neighborhood": "Woodside",
+  "category": "Learning",
+  "kind": "garden",
+  "description": "A historic estate garden that composts on site, uses drip irrigation, and is adding native and drought-tolerant plants.",
+  "access": "Buy a timed ticket to tour the garden, orchard, and trails, or join a guided garden program. Confirm current schedule and age requirements with the team.",
+  "address": "86 Cañada Road, Woodside, CA 94062",
+  "coordinates": [
+   37.452025,
+   -122.280268
+  ],
+  "coordinatesSource": "nominatim",
+  "practices": [
+   "native",
+   "trees"
+  ],
+  "action": "Plan a visit",
+  "url": "https://filoli.org/visit/",
+  "sourceUrl": "https://filoli.org/about/sustainability",
+  "sourcePublisher": "Filoli",
+  "evidence": "Increased use of native and drought-tolerant plants to reduce water dependence.",
+  "checkedAt": "2026-10-25"
+ },
+ {
+  "id": "hidden-villa",
+  "name": "Hidden Villa",
+  "city": "Los Altos Hills",
+  "county": "Santa Clara",
+  "neighborhood": "Los Altos Hills",
+  "category": "Learning",
+  "kind": "farm",
+  "description": "A ranch with a small organic farm, education gardens, and trails offering hands-on farm and nature programs.",
+  "access": "Visit the education garden and trails, or sign up for a farm volunteer shift or family program on the program calendar. Confirm current schedule and age requirements with the team.",
+  "address": "26870 Moody Road, Los Altos Hills, CA 94022",
+  "coordinates": [
+   37.3540149,
+   -122.1563281
+  ],
+  "coordinatesSource": "nominatim",
+  "practices": [
+   "food",
+   "native"
+  ],
+  "action": "Find a program",
+  "url": "https://www.hiddenvilla.org/programs/individuals-families/region-HV/",
+  "sourceUrl": "https://www.hiddenvilla.org/",
+  "sourcePublisher": "Hidden Villa",
+  "evidence": "Hidden Villa manages a small-scale, organic farm that teaches about and produces responsible food.",
+  "checkedAt": "2026-10-25"
+ },
+ {
+  "id": "veggielution",
+  "name": "Veggielution Community Farm",
+  "city": "San Jose",
+  "county": "Santa Clara",
+  "neighborhood": "East San José",
+  "category": "Garden",
+  "kind": "farm",
+  "description": "An East San José urban farm where neighbors farm together, explore a youth garden, and shop produce grown on site.",
+  "access": "Come to the monthly First Saturday open house to volunteer in the fields, tour the farm, or take a class. Confirm current schedule and age requirements with the team.",
+  "address": "647 S. King Road, San José, CA 95116",
+  "coordinates": [
+   37.3422027,
+   -121.8455008
+  ],
+  "coordinatesSource": "nominatim",
+  "practices": [
+   "food"
+  ],
+  "action": "Join First Saturday",
+  "url": "https://www.veggielution.org/firstsaturdays",
+  "sourceUrl": "https://www.veggielution.org/firstsaturdays",
+  "sourcePublisher": "Veggielution",
+  "evidence": "Every first Saturday of the month, over 100 neighbors join us to farm, make new friends, and shop our Farm Stand",
+  "checkedAt": "2026-10-25"
+ },
+ {
+  "id": "our-city-forest-community-nursery",
+  "name": "Our City Forest Community Nursery & Training Center",
+  "city": "San Jose",
+  "county": "Santa Clara",
+  "neighborhood": "Central San José",
+  "category": "Tools & seeds",
+  "kind": "nursery",
+  "description": "A community nursery growing native and drought-tolerant trees and shrubs for planting, with workshops on tree care.",
+  "access": "Visit during nursery hours or register on Eventbrite for a nursery workday or neighborhood tree planting. Confirm current schedule and age requirements with the team.",
+  "address": "1000 Spring Street, San Jose, CA 95110",
+  "coordinates": [
+   37.34896,
+   -121.913831
+  ],
+  "coordinatesSource": "nominatim",
+  "practices": [
+   "trees",
+   "native"
+  ],
+  "action": "Explore volunteering",
+  "url": "https://www.ourcityforest.org/nursery",
+  "sourceUrl": "https://www.ourcityforest.org/nursery",
+  "sourcePublisher": "Our City Forest",
+  "evidence": "All our plants are available on a tax-deductible donation basis, and visitors can attend workshops on planting, care and propagation.",
+  "checkedAt": "2026-10-25"
+ },
+ {
+  "id": "deer-hollow-farm",
+  "name": "Deer Hollow Farm",
+  "city": "Cupertino",
+  "county": "Santa Clara",
+  "neighborhood": "Rancho San Antonio",
+  "category": "Learning",
+  "kind": "farm",
+  "description": "A free working homestead farm inside an open space preserve, with farm animals and a volunteer-tended garden and orchard.",
+  "access": "Walk in from the park lots during farm hours, or apply to volunteer (ages 14+, with application and background check). Confirm current schedule and age requirements with the team.",
+  "address": "22500 Cristo Rey Drive, Cupertino, CA 95014",
+  "coordinates": [
+   37.3305572,
+   -122.082039
+  ],
+  "coordinatesSource": "nominatim",
+  "practices": [
+   "food",
+   "trees"
+  ],
+  "action": "Plan a visit",
+  "url": "https://www.deerhollowfarm.org/volunteer-on-the-farm",
+  "sourceUrl": "https://www.deerhollowfarm.org/plan-your-visit",
+  "sourcePublisher": "Friends of Deer Hollow Farm",
+  "evidence": "You can also enjoy friendly farm animals, as well as a garden and orchard supported by volunteers, during regular farm hours.",
+  "checkedAt": "2026-10-25"
+ },
+ {
+  "id": "ucsc-farm-chadwick-garden",
+  "name": "UCSC Farm & Alan Chadwick Garden (Center for Agroecology)",
+  "city": "Santa Cruz",
+  "county": "Santa Cruz",
+  "neighborhood": "UC Santa Cruz campus",
+  "category": "Learning",
+  "kind": "farm",
+  "description": "Certified-organic campus farm and garden used to teach and research organic growing, open free to visitors.",
+  "access": "Take a free self-guided visit during open hours, or fill out the volunteer interest form for work days and events. Confirm current schedule and age requirements with the team.",
+  "address": "1156 High St., Santa Cruz, CA 95064",
+  "coordinates": [
+   36.98554,
+   -122.0535521
+  ],
+  "coordinatesSource": "nominatim",
+  "practices": [
+   "food",
+   "trees",
+   "native"
+  ],
+  "action": "Explore volunteering",
+  "url": "https://agroecology.ucsc.edu/get-involved/volunteer/",
+  "sourceUrl": "https://agroecology.ucsc.edu/about/about-us/facilities/",
+  "sourcePublisher": "UC Santa Cruz Center for Agroecology",
+  "evidence": "These sites are both open to the public from 8am to 6pm daily, with no admission fees.",
+  "checkedAt": "2026-10-25"
+ }
+]

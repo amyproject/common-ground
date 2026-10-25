@@ -18,7 +18,7 @@ export function filterResources(
   const search = (filters.search ?? '').trim().toLocaleLowerCase()
   return resources.filter((resource) => {
     if (resource.status === 'inactive') return false
-    if (filters.city && filters.city !== 'All' && resource.city !== filters.city) return false
+    if (filters.city && filters.city !== 'All' && resource.city !== filters.city && resource.county !== filters.city) return false
     if (filters.category && filters.category !== 'All' && resource.category !== filters.category) return false
     if (filters.practices?.length && !resource.practices.some((id) => filters.practices!.includes(id))) return false
     const searchable = [

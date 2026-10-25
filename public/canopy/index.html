@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en" data-hub-section="canopy">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Canopy · organizer dashboard · East Bay Permaculture Guild</title>
+  <meta name="description" content="Volunteers, crews, partner groups, sites, and the growth plan for the East Bay Permaculture Guild.">
+  <link rel="stylesheet" href="/hub/hub.css">
+  <link rel="stylesheet" href="styles.css">
+  <script src="/hub/hub.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#content">Skip to content</a>
+  <div class="app">
+    <nav class="side" aria-label="Canopy">
+      <div class="side-head">
+        <p class="side-label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21v-7"/><path d="M7.5 14.5a4.5 4.5 0 0 1-.9-8.9A5.5 5.5 0 0 1 17 6.4a4.2 4.2 0 0 1 .4 8.1z"/></svg><span><b>Canopy</b> · organizer dashboard</span></p>
+        <div class="org"><span class="dot" aria-hidden="true">EB</span><span>East Bay Permaculture Guild</span></div>
+      </div>
+      <div id="nav"></div>
+      <div class="side-foot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5 9 17l11-11"/></svg><span>Nothing is sent until a person clicks send.</span></div>
+    </nav>
+    <div class="main">
+      <header class="top">
+        <div class="search" role="search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5"/></svg>
+          <label for="global-search" class="sr-only">Search volunteers</label>
+          <input id="global-search" type="search" placeholder="Find a volunteer" autocomplete="off">
+          <kbd aria-hidden="true">/</kbd>
+          <ul id="search-results" class="search-results" hidden></ul>
+        </div>
+        <div class="top-right">
+          <span id="sample-chip" class="sample-chip" hidden>Sample data · fictional people</span>
+          <span id="server-chip" class="sample-chip" hidden></span>
+          <button id="ask-btn" class="btn ask-btn" type="button" data-act="toggle-assist" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5h14a1.5 1.5 0 0 1 1.5 1.5v8.5A1.5 1.5 0 0 1 19 17h-7.5L7 20.5V17H5a1.5 1.5 0 0 1-1.5-1.5V7A1.5 1.5 0 0 1 5 5.5z"/><path d="M8 10h8M8 13h5"/></svg><span>Ask</span></button>
+          <div class="menu">
+            <button id="new-btn" class="btn primary" type="button" aria-haspopup="true" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>New</span></button>
+            <div id="new-menu" class="menu-pop" hidden>
+              <button type="button" data-act="new-message">New message</button>
+              <button type="button" data-act="new-volunteer">Add volunteer</button>
+              <button type="button" data-act="new-event">New event</button>
+            </div>
+          </div>
+          <div class="menu">
+            <button id="me-btn" class="avatar me" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Account">ME</button>
+            <div id="me-menu" class="menu-pop me-pop" hidden>
+              <div class="me-who"><span id="me-name">Organizer</span><small id="me-role">Checking sign-in…</small></div>
+              <label for="sender">Sign messages as</label>
+              <input id="sender" type="text" placeholder="Your name" autocomplete="name">
+              <hr>
+              <button type="button" data-act="reset-sample">Reload sample workspace</button>
+              <button type="button" data-act="start-empty">Start an empty workspace</button>
+              <hr>
+              <button type="button" data-act="sign-out" class="signout"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4.5H6.5a1.5 1.5 0 0 0-1.5 1.5v12a1.5 1.5 0 0 0 1.5 1.5H14"/><path d="M10 12h10M16.5 8.5 20 12l-3.5 3.5"/></svg>Sign out</button>
+            </div>
+          </div>
+        </div>
+      </header>
+      <main id="content" class="content" tabindex="-1"></main>
+    </div>
+  </div>
+  <div id="drawer-root"></div>
+  <div id="assist-root"></div>
+  <div id="tip" class="tip" role="tooltip" hidden></div>
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <script src="engine/core.js"></script>
+  <script src="engine/guardrails.js"></script>
+  <script src="engine/seed.js"></script>
+  <script src="engine/volunteers.js"></script>
+  <script src="engine/crews.js"></script>
+  <script src="engine/sites.js"></script>
+  <script src="engine/network.js"></script>
+  <script src="engine/rewards.js"></script>
+  <script src="engine/analytics.js"></script>
+  <script src="engine/growth.js"></script>
+  <script src="engine/outreach.js"></script>
+  <script src="engine/store.js"></script>
+  <script src="engine/ai.js"></script>
+  <script src="charts.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

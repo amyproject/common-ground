@@ -1,3 +1,25 @@
+# Common Ground hub (branch `permaculture-hub`)
+
+One Bay Area permaculture hub with three sections that share a header, fonts, and palette (`public/hub/hub.css`, `public/hub/hub.js`):
+
+| Section | URL | What it is |
+| --- | --- | --- |
+| Home | `/` | Coast-to-interior climate cross-section, doors into each section, a month-by-month task guide |
+| Explore | `/learn` | The Common Ground map, now with places across the nine counties, climate layers (summer heat, rain, frost), field stamps, and planting checks that use the nearest regional climate reference |
+| Plan | `/plan/` | PermaPlot (static). Accepts `?lat=&lon=&place=#check` from Explore |
+| Canopy | `/canopy/` | The guild volunteer CRM. **Admin only**: `/login`, then you land on the dashboard |
+
+```sh
+npm ci        # or reuse an existing node_modules
+npm run dev   # http://127.0.0.1:5180
+```
+
+Admin sign-in defaults to `admin` / `permaculture` (shown on the sign-in page while defaults are in use). Set `HUB_ADMIN_USER`, `HUB_ADMIN_PASSWORD`, and optionally `HUB_SESSION_SECRET` to change it. The gate is one account with a signed HttpOnly cookie and a failed-attempt limit, suitable for a demo, not a multi-user identity system. Canopy's send and AI endpoints are served under the gate at `/canopy/api/*`; put `OPENROUTER_API_KEY` (or Gemini/OpenAI keys) and Resend/Twilio keys in `.env` to enable them, otherwise sending is a dry run.
+
+Regional climate: `node scripts/prepare-bay-area-climate.mjs` builds `src/data/bay-area-climate.json` from Open-Meteo (ERA5-Land temperature, ERA5 rain, 2021–2025) for 30 reference points and an interpolated land grid. Rain comes from a ~25 km grid, so it is coarse; the map labels the layers as blended between reference points.
+
+---
+
 # Common Ground
 
 **Explore your neighborhood. Learn how land works. Grow something together.**

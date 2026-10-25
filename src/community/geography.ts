@@ -1,4 +1,5 @@
 import { bayAreaBounds, type NeighborhoodGeometry, type RegionalPolygon } from '../exploration/geography.ts'
+import { nearestReference } from '../hub/climate.ts'
 import type { SelectedSite, SiteEnvironment } from './types.ts'
 
 export const pilotBounds = [-122.299, 37.7965, -122.2365, 37.827] as const
@@ -77,6 +78,13 @@ export function describeSite(map: NeighborhoodGeometry, coordinates: { latitude:
 
 export function climateAt(environment: SiteEnvironment, site: { latitude: number; longitude: number }) {
   return inPilot(site.latitude, site.longitude) ? environment.climate : null
+}
+
+// Outside the pilot, the nearest Bay Area reference point (within 30 km) stands in.
+export function regionalClimateAt(environment: SiteEnvironment, site: { latitude: number; longitude: number }) {
+  if (inPilot(site.latitude, site.longitude) || !environment.regional) return null
+  const near = nearestReference(environment.regional, site)
+  return near ? { ...near, source: environment.regional } : null
 }
 
 export function terrainAt(environment: SiteEnvironment, site: { latitude: number; longitude: number }): { elevation: number; slope: number | null } | null {

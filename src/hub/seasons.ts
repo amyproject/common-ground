@@ -1,0 +1,15 @@
+// General Bay Area garden timing. Coast/bay and inland lists differ mainly by heat and frost.
+export const seasons: { name: string; bay: string[]; inland: string[] }[] = [
+  { name: 'January', bay: ['Plant bare-root fruit trees and berries', 'Prune dormant apples and pears', 'Sow fava beans and peas in open spells'], inland: ['Plant bare-root trees on frost-free days', 'Prune dormant fruit trees', 'Cover tender plants on frosty nights'] },
+  { name: 'February', bay: ['Start tomatoes and peppers indoors', 'Sheet-mulch a lawn while the soil is wet', 'Plant potatoes and onion sets'], inland: ['Start warm-season seeds indoors', 'Spray dormant oil only if pests were bad', 'Plant onions and early greens'] },
+  { name: 'March', bay: ['Sow lettuce, chard, and carrots', 'Plant natives before the rains stop', 'Check drip lines for winter damage'], inland: ['Sow peas and greens', 'Plant natives while the soil is moist', 'Hold warm crops until frost passes'] },
+  { name: 'April', bay: ['Transplant tomatoes once nights pass 50°F', 'Sow beans and squash late in the month', 'Mulch beds before the soil dries'], inland: ['Transplant tomatoes and peppers after the last frost', 'Sow beans, corn, and squash', 'Set up drip and timers'] },
+  { name: 'May', bay: ['Sow corn and more beans', 'Thin fruit on young trees', 'Top up mulch to 3 inches'], inland: ['Sow melons and more squash', 'Mulch deeply before the heat', 'Shade-cloth tender greens'] },
+  { name: 'June', bay: ['Water deeply and less often', 'Harvest garlic when leaves brown', 'Sow a second round of beans'], inland: ['Water early in the morning', 'Harvest garlic and onions', 'Let natives go summer-dry'] },
+  { name: 'July', bay: ['Pick often to keep plants producing', 'Save seed from your best plants', 'Start fall brassicas from seed'], inland: ['Check drip daily in heat waves', 'Harvest tomatoes at first blush', 'Start fall brassicas in shade'] },
+  { name: 'August', bay: ['Transplant fall kale and broccoli', 'Collect and dry seed heads', 'Order garlic and cover-crop seed'], inland: ['Keep beds mulched and shaded', 'Start fall crops indoors', 'Plan native plantings for fall'] },
+  { name: 'September', bay: ['Plant fall greens and roots', 'Divide perennials', 'Clean gutters for first rain'], inland: ['Transplant fall brassicas as heat breaks', 'Sow carrots and beets', 'Build compost from summer debris'] },
+  { name: 'October', bay: ['Plant natives with the first rain', 'Sow cover crops on empty beds', 'Plant garlic and fava beans'], inland: ['Plant natives and trees', 'Sow cover crops', 'Plant garlic and shallots'] },
+  { name: 'November', bay: ['Set up rain barrels and swales', 'Plant onions and more garlic', 'Mulch with fallen leaves'], inland: ['Capture rain in barrels or basins', 'Mulch around trees', 'Protect citrus from early frost'] },
+  { name: 'December', bay: ['Rest the soil under mulch', 'Plan next year’s beds', 'Order seeds and bare-root trees'], inland: ['Cover frost-tender plants', 'Plan beds and order seed', 'Prune roses and dormant shrubs'] },
+]
