@@ -16,6 +16,8 @@ npm run dev   # http://127.0.0.1:5180
 
 Admin sign-in defaults to `admin` / `permaculture` (shown on the sign-in page while defaults are in use). Set `HUB_ADMIN_USER`, `HUB_ADMIN_PASSWORD`, and optionally `HUB_SESSION_SECRET` to change it. The gate is one account with a signed HttpOnly cookie and a failed-attempt limit, suitable for a demo, not a multi-user identity system. Canopy's send and AI endpoints are served under the gate at `/canopy/api/*`; put `OPENROUTER_API_KEY` (or Gemini/OpenAI keys) and Resend/Twilio keys in `.env` to enable them, otherwise sending is a dry run.
 
+Hosting on Vercel: `vercel.json` builds with Vite into `dist/` and rewrites `/learn` and `/login` to the app. `middleware.js` runs the admin sign-in and the Canopy gate at the edge. Set `HUB_ADMIN_PASSWORD` and `HUB_SESSION_SECRET` in the Vercel project's environment variables, or the demo login applies. The hosted site is static: garden-project sharing (local SQLite) and Canopy's send/AI endpoints only work under `npm run dev`; Canopy falls back to mailto/sms links.
+
 Regional climate: `node scripts/prepare-bay-area-climate.mjs` builds `src/data/bay-area-climate.json` from Open-Meteo (ERA5-Land temperature, ERA5 rain, 2021–2025) for 30 reference points and an interpolated land grid. Rain comes from a ~25 km grid, so it is coarse; the map labels the layers as blended between reference points.
 
 ---
