@@ -41,6 +41,15 @@ export default defineConfig({
       server.httpServer.once('close', () => { void community.close() })
     },
   }],
+  // The browser has no node:crypto; device mode (src/hub/local-volunteers.ts) runs server/volunteers.mjs with these.
+  resolve: { alias: { 'node:crypto': resolve('src/hub/device/node-crypto.js'), 'node:util': resolve('src/hub/device/node-util.js'), 'node:module': resolve('src/hub/device/node-module.js') } },
+  build: {
+    rolldownOptions: {
+      input: { main: resolve('index.html'), 'local-volunteers': resolve('src/hub/local-volunteers.ts') },
+      // Static pages (Plan, Canopy) load it by a fixed name through /hub/hub.js.
+      output: { entryFileNames: chunk => chunk.name === 'local-volunteers' ? 'hub/local-volunteers.js' : 'assets/[name]-[hash].js' },
+    },
+  },
   server: { host: '127.0.0.1', port: 5180, strictPort: true },
   preview: { host: '127.0.0.1', port: 4180, strictPort: true },
 })

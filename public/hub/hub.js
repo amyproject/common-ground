@@ -44,17 +44,22 @@
       const button = event.target.closest('[data-hub-signout]')
       if (!button) return
       const url = button.dataset.hubSignout === 'volunteer' ? '/api/volunteer/signout' : '/api/auth/logout'
-      await fetch(url, { method: 'POST', credentials: 'same-origin' }).catch(() => null)
+      await ready.then(() => fetch(url, { method: 'POST', credentials: 'same-origin' })).catch(() => null)
       location.href = '/'
     })
     // Static file previews have no auth server; the header just stays signed out.
     if (location.protocol.startsWith('http')) {
       fetch('/api/auth/me', { credentials: 'same-origin' }).then(r => r.ok ? r.json() : { admin: false }).then(me => draw({ admin: Boolean(me.admin), name: me.name })).catch(() => undefined)
-      fetch('/api/volunteer/session', { credentials: 'same-origin' }).then(r => r.ok ? r.json() : null).then(volunteer => draw({ volunteer })).catch(() => undefined)
+      ready.then(() => fetch('/api/volunteer/session', { credentials: 'same-origin' })).then(r => r.ok ? r.json() : null).then(volunteer => draw({ volunteer })).catch(() => undefined)
     }
     // Pages can refresh the header after signing in or earning Seeds.
-    window.addEventListener('hub:refresh', () => fetch('/api/volunteer/session', { credentials: 'same-origin' }).then(r => r.ok ? r.json() : null).then(volunteer => draw({ volunteer })).catch(() => undefined))
+    window.addEventListener('hub:refresh', () => ready.then(() => fetch('/api/volunteer/session', { credentials: 'same-origin' })).then(r => r.ok ? r.json() : null).then(volunteer => draw({ volunteer })).catch(() => undefined))
   }
+  // Volunteer device mode: keeps sign-up working on hosts without a database (see src/hub/local-volunteers.ts).
+  // Built to /hub/local-volunteers.js; the dev server serves the source instead. Pages await this before calling /api/volunteer.
+  const ready = window.hubVolunteersReady = window.hubVolunteersReady || (location.protocol.startsWith('http')
+    ? import('/hub/local-volunteers.js').catch(() => import('/src/hub/local-volunteers.ts')).catch(() => undefined)
+    : Promise.resolve())
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount)
   else mount()
 })()

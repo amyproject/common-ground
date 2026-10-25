@@ -20,4 +20,8 @@ import './hub/volunteer.css'
 const path = window.location.pathname.replace(/\/+$/, '') || '/'
 const page = path === '/' ? <HubHome /> : path === '/login' ? <Login /> : path === '/join' ? <Join /> : path === '/volunteer' ? <VolunteerDashboard /> : <App />
 
-ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode>{page}</React.StrictMode>)
+// Wait (briefly) for /hub/hub.js to set up volunteer device mode before pages call /api/volunteer.
+const ready = (window as unknown as { hubVolunteersReady?: Promise<unknown> }).hubVolunteersReady
+void Promise.race([ready, new Promise(resolve => window.setTimeout(resolve, 2500))]).finally(() => {
+  ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode>{page}</React.StrictMode>)
+})

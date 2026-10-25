@@ -722,6 +722,9 @@ npm run dev</pre></div></section>`;
   // Lives on the hub server (/api/volunteer/admin/*), shared with each volunteer's dashboard.
   const hub = { data: null, loading: false, error: '', eventId: null };
   async function hubApi(path, body) {
+    // Device mode on hosts without a database: /hub/hub.js (deferred, so after this script) sets it up.
+    if (document.readyState === 'loading') await new Promise((done) => document.addEventListener('DOMContentLoaded', done, { once: true }));
+    if (window.hubVolunteersReady) await window.hubVolunteersReady;
     const r = await fetch(`/api/volunteer/admin/${path}`, body ? { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : { credentials: 'same-origin' });
     const j = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(j.error || `HTTP ${r.status}`);
