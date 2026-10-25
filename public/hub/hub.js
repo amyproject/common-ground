@@ -17,7 +17,7 @@
       ? `<a class="hub-signin is-admin" href="/canopy/">${icons.canopy}<span class="hub-signin-label">${state.name || 'Admin'}</span></a><button class="hub-signout" type="button" data-hub-signout>Sign out</button>`
       : `<a class="hub-signin" href="/login?next=${encodeURIComponent('/canopy/')}">${icons.key}<span class="hub-signin-label">Sign in</span></a>`
     return `<div class="hub-bar-inner">
-      <a class="hub-brand" href="/" aria-label="Common Ground hub home"><span class="hub-brand-mark">${sprout}</span><strong>common ground<span>.</span></strong></a>
+      <a class="hub-brand" href="/" aria-label="Common Ground hub home"><span class="hub-brand-mark">${sprout}</span><strong>Common Ground</strong></a>
       <nav class="hub-nav" aria-label="Hub sections">
         ${link('explore', '/learn', 'Explore', 'Bay Area')}
         ${link('plan', '/plan/', 'Plan', 'your plot')}

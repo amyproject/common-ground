@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
-import { ArrowRight, Droplets, KeyRound, Snowflake, Sun } from 'lucide-react'
+import { ArrowRight, Droplets, Snowflake, Sun } from 'lucide-react'
 import type { BayAreaGeometry } from '../exploration/geography.ts'
 import type { Resource } from '../types.ts'
 import type { BayClimate, ClimateReference } from './climate.ts'
-import { seasons } from './seasons.ts'
 
 type ZoneId = 'coast' | 'bay' | 'hills' | 'valley' | 'inland'
 const zones: { id: ZoneId; name: string; reference: string; x: [number, number]; blurb: string; bets: string }[] = [
@@ -49,14 +48,8 @@ export function HubHome() {
           <MiniBed />
           <a className="door-link" href="/plan/">Open the planner <ArrowRight size={16} /></a>
         </article>
-        <article className="door door-organize">
-          <header><span className="door-number">3</span><div><h2>Organize</h2><p>Canopy is the guild’s volunteer desk: crews, events, partners, and messages.</p></div></header>
-          <Notebook />
-          <a className="door-link" href="/login?next=%2Fcanopy%2F"><KeyRound size={16} />Sign in as an organizer</a>
-        </article>
       </section>
 
-      <SeasonStrip />
     </main>
     <footer className="hub-footer"><p>Common Ground is a community prototype. Place listings are public-source checks, not steward endorsements. Climate figures come from Open-Meteo ERA5 reanalysis.</p><p><a href="/learn?view=map">Places directory</a> · <a href="/projects/index.html">Readable listings</a></p></footer>
   </div>
@@ -181,36 +174,4 @@ function Plant({ crop }: { crop: Exclude<Crop, null> }) {
   if (crop === 'tomato') return <g><path d="M0 14 V-6" stroke="#4f7a3f" strokeWidth="2.5" /><path d="M0 0 q-12 -4 -14 -14 M0 -4 q12 -4 13 -15" stroke="#4f7a3f" strokeWidth="2.2" fill="none" strokeLinecap="round" /><circle cx="-7" cy="5" r="6" fill="#c9553e" /><circle cx="7" cy="2" r="5" fill="#d8664a" /></g>
   if (crop === 'basil') return <g fill="#7fb35e"><ellipse cx="-7" cy="-2" rx="7" ry="11" transform="rotate(-25)" /><ellipse cx="7" cy="-2" rx="7" ry="11" transform="rotate(25)" /><ellipse cx="0" cy="-10" rx="6" ry="10" fill="#93c46f" /><path d="M0 14 V0" stroke="#4f7a3f" strokeWidth="2" /></g>
   return <g><path d="M0 14 V2" stroke="#4f7a3f" strokeWidth="2" />{[0, 60, 120, 180, 240, 300].map(a => <ellipse key={a} cx="0" cy="-7" rx="4.5" ry="7" fill="#e8a33c" transform={`rotate(${a} 0 -2)`} />)}<circle cy="-2" r="4.5" fill="#c4682d" /></g>
-}
-
-function Notebook() {
-  return <div className="notebook" aria-hidden="true">
-    <div className="notebook-page">
-      <p className="notebook-title">Saturday crew · Fruitvale</p>
-      <ul><li><span className="tick done" />Sheet mulch the north beds</li><li><span className="tick done" />Text the new volunteers</li><li><span className="tick" />Seed swap table</li></ul>
-      <div className="notebook-bars">{[38, 52, 44, 61, 70, 66, 80].map((v, i) => <i key={i} style={{ height: `${v}%` }} />)}</div>
-      <p className="notebook-foot">Crew sign-ups, last 7 weeks</p>
-    </div>
-    <div className="notebook-lock"><span><KeyRound size={17} />Organizers only</span></div>
-  </div>
-}
-
-function SeasonStrip() {
-  const now = new Date().getMonth()
-  const [month, setMonth] = useState(now)
-  const [inland, setInland] = useState(false)
-  const season = seasons[month]
-  return <section className="season" aria-labelledby="season-title">
-    <div className="season-head">
-      <h2 id="season-title">What to do in <em>{season.name}</em></h2>
-      <div className="season-toggle" role="group" aria-label="Where you garden"><button aria-pressed={!inland} onClick={() => setInland(false)}>Near the bay or coast</button><button aria-pressed={inland} onClick={() => setInland(true)}>Inland valleys</button></div>
-    </div>
-    <div className="season-months" role="tablist" aria-label="Month">
-      {seasons.map((s, i) => <button key={s.name} role="tab" aria-selected={i === month} className={i === now ? 'is-now' : ''} onClick={() => setMonth(i)}>{s.name.slice(0, 3)}</button>)}
-    </div>
-    <ol className="season-tasks" key={`${month}-${inland}`}>
-      {(inland ? season.inland : season.bay).map((task, i) => <li key={task} style={{ animationDelay: `${i * 60}ms` }}><span>{i + 1}</span>{task}</li>)}
-    </ol>
-    <p className="season-note">General Bay Area timing. Fog, frost, and your own microclimate shift it by weeks, so check your spot in Plan.</p>
-  </section>
 }

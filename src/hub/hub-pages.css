@@ -49,7 +49,7 @@
 .transect-bets { font-size: 12.5px; color: #4d5c47; margin: 6px 0 8px !important; }
 .transect-bets span { display: block; font: italic 450 13px var(--cg-display); color: var(--cg-sage); }
 
-.home-doors { display: grid; grid-template-columns: 1.25fr 1fr 1fr; gap: 18px; margin-top: 8px; }
+.home-doors { display: grid; grid-template-columns: 1.2fr 1fr; gap: 18px; margin-top: 8px; }
 .door { background: var(--cg-card); border: 1px solid var(--cg-line); border-radius: 14px; padding: 20px 20px 16px; display: flex; flex-direction: column; gap: 14px; transition: border-color .2s, transform .25s cubic-bezier(.3, 1.4, .5, 1); }
 .door:hover { border-color: #b6c6a2; transform: translateY(-3px); }
 .door header { display: flex; gap: 13px; align-items: flex-start; }
@@ -59,7 +59,6 @@
 .door-link { display: inline-flex; align-items: center; gap: 7px; margin-top: auto; font-size: 13.5px; font-weight: 600; color: var(--cg-forest); text-decoration: none; }
 .door-link svg { transition: transform .25s cubic-bezier(.3, 1.6, .5, 1); }
 .door-link:hover svg:last-child { transform: translateX(4px); }
-.door-organize { background: #f4f1e3; }
 
 .mini-map svg, .mini-bed svg { display: block; width: 100%; height: auto; border-radius: 10px; }
 .mini-map svg { border: 1px solid var(--cg-line); }
@@ -75,36 +74,7 @@
 .bed-friend { animation: dash 1.2s linear infinite; }
 @keyframes dash { to { stroke-dashoffset: -14; } }
 
-.notebook { position: relative; }
-.notebook-page { background: #fffef8 repeating-linear-gradient(transparent 0 25px, #e6e9da 25px 26px); border: 1px solid var(--cg-line); border-left: 4px double #d7b9a0; border-radius: 6px; padding: 12px 14px 10px 18px; filter: blur(1.4px) saturate(.8); transition: filter .35s; }
-.door-organize:hover .notebook-page { filter: blur(.6px); }
-.notebook-title { font: italic 450 16px var(--cg-display); margin: 0 0 6px; }
-.notebook ul { list-style: none; padding: 0; margin: 0 0 10px; font-size: 13px; line-height: 26px; }
-.tick { display: inline-block; width: 12px; height: 12px; border: 1.5px solid #8b9b72; border-radius: 3px; margin-right: 8px; vertical-align: -1px; }
-.tick.done { background: #8b9b72; }
-.notebook-bars { display: flex; align-items: flex-end; gap: 5px; height: 48px; }
-.notebook-bars i { flex: 1; background: #b9c99c; border-radius: 3px 3px 0 0; }
-.notebook-foot { font-size: 11px; color: var(--cg-muted); margin: 4px 0 0; }
-.notebook-lock { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: 14px; color: var(--cg-forest); }
-.notebook-lock span { display: inline-flex; align-items: center; gap: 8px; background: #fffef8; border: 1px solid var(--cg-line-2); border-radius: 30px; padding: 9px 16px; box-shadow: 0 3px 10px #4e603414; }
 
-.season { margin-top: 34px; border-top: 1px solid var(--cg-line); padding-top: 28px; }
-.season-head { display: flex; justify-content: space-between; align-items: end; gap: 20px; flex-wrap: wrap; }
-.season h2 { font: 440 34px/1.1 var(--cg-display); letter-spacing: -1px; }
-.season h2 em { color: var(--cg-sage); font-weight: 400; }
-.season-toggle { display: flex; background: var(--cg-paper-2); border: 1px solid var(--cg-line); border-radius: 30px; padding: 3px; }
-.season-toggle button { border: 0; background: none; padding: 7px 13px; border-radius: 30px; font: 550 13px var(--cg-body); color: var(--cg-muted); cursor: pointer; }
-.season-toggle button[aria-pressed='true'] { background: var(--cg-card); color: var(--cg-forest); box-shadow: 0 1px 2px #4e60341a; }
-.season-months { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; margin: 18px 0 16px; }
-.season-months button { border: 1px solid var(--cg-line); background: var(--cg-card); border-radius: 6px; padding: 9px 0; font: 600 13px var(--cg-body); color: var(--cg-muted); cursor: pointer; position: relative; transition: background .15s, transform .2s cubic-bezier(.3, 1.6, .5, 1); }
-.season-months button:hover { background: #eff3e7; transform: translateY(-2px); }
-.season-months button[aria-selected='true'] { background: var(--cg-forest); color: #f5f7ec; border-color: var(--cg-forest); }
-.season-months button.is-now::after { content: ''; position: absolute; left: 50%; bottom: 3px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: var(--cg-honey); }
-.season-tasks { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.season-tasks li { display: flex; gap: 12px; align-items: baseline; font-size: 15px; line-height: 1.45; padding: 14px 16px; background: var(--cg-card); border: 1px dashed var(--cg-line-2); border-radius: 10px; animation: rise .35s cubic-bezier(.3, 1.4, .5, 1) both; }
-.season-tasks li span { font: italic 400 26px/1 var(--cg-display); color: var(--cg-moss); }
-@keyframes rise { from { opacity: 0; transform: translateY(8px); } }
-.season-note { font-size: 12.5px; color: var(--cg-muted); margin: 12px 0 0; }
 .hub-footer { max-width: 1320px; margin: auto; padding: 22px 40px 34px; border-top: 1px solid var(--cg-line); display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; font-size: 12.5px; color: var(--cg-muted); }
 .hub-footer p { margin: 0; max-width: 760px; }
 .hub-footer a { color: var(--cg-forest); }
@@ -134,13 +104,11 @@
 @media (max-width: 1000px) {
   .home-hero { grid-template-columns: 1fr; padding-top: 30px; }
   .home-doors { grid-template-columns: 1fr; }
-  .season-tasks { grid-template-columns: 1fr; }
-  .transect-card { grid-template-columns: 1fr; grid-template-areas: 'title' 'blurb' 'stats' 'spark' 'bets' 'link'; margin-inline: 0; margin-top: 10px; }
+    .transect-card { grid-template-columns: 1fr; grid-template-areas: 'title' 'blurb' 'stats' 'spark' 'bets' 'link'; margin-inline: 0; margin-top: 10px; }
 }
 @media (max-width: 700px) {
   .hub-home { padding: 0 16px 30px; }
-  .season-months { grid-template-columns: repeat(6, 1fr); }
-  .login-page { grid-template-columns: 1fr; padding: 20px 16px; gap: 10px; }
+    .login-page { grid-template-columns: 1fr; padding: 20px 16px; gap: 10px; }
   .login-gate svg { max-width: 220px; }
 }
 @media (prefers-reduced-motion: reduce) {
